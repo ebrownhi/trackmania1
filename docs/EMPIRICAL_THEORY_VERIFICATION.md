@@ -1,5 +1,10 @@
 # Empirical Theory Verification Report (5-Seed Mac TorchScript Suite)
 
+> **Status (2026-11-25):** the claims below have been tested on the real `l2f` → `gym-pybullet-drones` pair — see
+> `docs/REAL_SIM_RESULTS.md` for which hold, which are partial, and which were corrected (relay period 4d+2; Δa penalty
+> as a fine-tuning stage; GP input must be ground-truth pose; dynamics DR did not help).
+
+
 **Project:** *One Method, Two Racing Worlds: Sim-to-Sim Transfer in Drone and Trackmania Racing* (CMU 16-831)  
 **Runnable Suite:** `../theory_sim/` (`envs.py`, `models_and_learners.py`, `run_all_experiments.py`, `results.json`)  
 **Execution:** 5 deterministic seeds (`0..4`) run in parallel on Apple M5 Pro CPU in **87.8 seconds**.

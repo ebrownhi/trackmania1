@@ -1,0 +1,18 @@
+Exp 5b done in 1153s
+
+Part A: body-velocity RMSE [m/s] (mean ± std, 3 seeds)
+  FF_fixed   src 0.098 ± 0.001  target 0.165 ± 0.008  target_pert 0.234 ± 0.018
+  GRU_fixed  src 0.082 ± 0.009  target 0.171 ± 0.013  target_pert 0.212 ± 0.028
+  FF_rand    src 0.125 ± 0.010  target 0.156 ± 0.011  target_pert 0.147 ± 0.014
+  GRU_rand   src 0.091 ± 0.007  target 0.156 ± 0.009  target_pert 0.142 ± 0.012
+
+Part B: eff_rmse [m] (crash = 1 m) / gates / crash
+  teacher    src_fixed 0.203 ± 0.001 / 1.00 / 0.00 | target 0.210 ± 0.000 / 1.00 / 0.00 | target_pert 0.389 ± 0.000 / 0.08 / 0.00
+  FF_fixed   src_fixed 0.815 ± 0.031 / 0.21 / 1.00 | target 0.842 ± 0.028 / 0.12 / 1.00 | target_pert 0.887 ± 0.020 / 0.07 / 1.00
+  FF_rand    src_fixed 0.825 ± 0.025 / 0.17 / 1.00 | target 0.869 ± 0.034 / 0.13 / 1.00 | target_pert 0.908 ± 0.017 / 0.04 / 1.00
+  GRU_fixed  src_fixed 0.212 ± 0.012 / 0.95 / 0.00 | target 0.411 ± 0.014 / 0.23 / 0.11 | target_pert 0.867 ± 0.023 / 0.07 / 1.00
+  GRU_rand   src_fixed 0.296 ± 0.047 / 0.76 / 0.11 | target 0.403 ± 0.134 / 0.54 / 0.11 | target_pert 0.697 ± 0.199 / 0.15 / 0.67
+  rho_obs target GRU_fixed_vs_FF_fixed: [0.66, 0.71, 0.68]
+  rho_obs target GRU_rand_vs_FF_rand: [0.44, 0.97, 0.69]
+  rho_obs target_pert GRU_fixed_vs_FF_fixed: [0.1, 0.05, -0.04]
+  rho_obs target_pert GRU_rand_vs_FF_rand: [0.15, 0.95, 0.13]

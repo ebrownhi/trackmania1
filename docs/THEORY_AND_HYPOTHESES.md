@@ -1,5 +1,10 @@
 # Mathematical Framework & Hypothesis Stress-Test (H1–H4)
 
+> **Status (2026-11-25):** the claims below have been tested on the real `l2f` → `gym-pybullet-drones` pair — see
+> `docs/REAL_SIM_RESULTS.md` for which hold, which are partial, and which were corrected (relay period 4d+2; Δa penalty
+> as a fine-tuning stage; GP input must be ground-truth pose; dynamics DR did not help).
+
+
 **Project:** *One Method, Two Racing Worlds: Sim-to-Sim Transfer in Drone and Trackmania Racing* (CMU 16-831)  
 **Purpose:** Formal theoretical foundation, sim-to-sim return gap decomposition, pre-implementation failure-mode proofs, and refined falsifiable hypotheses (**H1'–H4'**).
 

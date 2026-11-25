@@ -1,0 +1,41 @@
+Exp 9: 60 jobs (200000 FT steps) in 2318s
+
+[target: nominal]  true hold error [m] (crash = 1 m) | crash rate   (mean ± std, 3 seeds)
+  zeroshot        0.137 ± 0.070 |    0.000 ± 0.000
+  nominal_ft      0.138 ± 0.053 |    0.000 ± 0.000
+  dr_ft           0.170 ± 0.088 |    0.000 ± 0.000
+  residual_ft     0.059 ± 0.036 |    0.000 ± 0.000
+  oracle_ft       0.025 ± 0.010 |    0.000 ± 0.000
+  calib: d_hat=0 tau_hat=tau30ms |GP mean|=0.000 m (true |obs - p| = 0.000 m)
+  calib: d_hat=0 tau_hat=tau20ms |GP mean|=0.000 m (true |obs - p| = 0.000 m)
+  calib: d_hat=0 tau_hat=tau30ms |GP mean|=0.000 m (true |obs - p| = 0.000 m)
+
+[target: perturbed]  true hold error [m] (crash = 1 m) | crash rate   (mean ± std, 3 seeds)
+  zeroshot        0.064 ± 0.013 |    0.000 ± 0.000
+  nominal_ft      0.069 ± 0.021 |    0.000 ± 0.000
+  dr_ft           0.095 ± 0.032 |    0.000 ± 0.000
+  residual_ft     0.076 ± 0.010 |    0.000 ± 0.000
+  oracle_ft       0.017 ± 0.004 |    0.000 ± 0.000
+  calib: d_hat=1 tau_hat=tau30ms |GP mean|=0.000 m (true |obs - p| = 0.000 m)
+  calib: d_hat=1 tau_hat=tau20ms |GP mean|=0.000 m (true |obs - p| = 0.000 m)
+  calib: d_hat=0 tau_hat=tau30ms |GP mean|=0.000 m (true |obs - p| = 0.000 m)
+
+[target: biased]  true hold error [m] (crash = 1 m) | crash rate   (mean ± std, 3 seeds)
+  zeroshot        0.159 ± 0.054 |    0.000 ± 0.000
+  nominal_ft      0.169 ± 0.043 |    0.000 ± 0.000
+  dr_ft           0.189 ± 0.071 |    0.000 ± 0.000
+  residual_ft     0.103 ± 0.016 |    0.000 ± 0.000
+  oracle_ft       0.090 ± 0.014 |    0.000 ± 0.000
+  calib: d_hat=0 tau_hat=tau30ms |GP mean|=0.094 m (true |obs - p| = 0.093 m)
+  calib: d_hat=0 tau_hat=tau20ms |GP mean|=0.083 m (true |obs - p| = 0.083 m)
+  calib: d_hat=0 tau_hat=tau30ms |GP mean|=0.080 m (true |obs - p| = 0.080 m)
+
+[target: noisy]  true hold error [m] (crash = 1 m) | crash rate   (mean ± std, 3 seeds)
+  zeroshot        0.142 ± 0.076 |    0.000 ± 0.000
+  nominal_ft      0.131 ± 0.053 |    0.000 ± 0.000
+  dr_ft           0.161 ± 0.080 |    0.000 ± 0.000
+  residual_ft     0.105 ± 0.023 |    0.000 ± 0.000
+  oracle_ft       0.076 ± 0.051 |    0.000 ± 0.000
+  calib: d_hat=1 tau_hat=tau20ms |GP mean|=0.049 m (true |obs - p| = 0.064 m)
+  calib: d_hat=0 tau_hat=tau20ms |GP mean|=0.052 m (true |obs - p| = 0.064 m)
+  calib: d_hat=0 tau_hat=tau30ms |GP mean|=0.048 m (true |obs - p| = 0.064 m)

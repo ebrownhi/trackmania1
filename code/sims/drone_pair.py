@@ -221,7 +221,7 @@ class PyBulletBackend:
 
     name = "pybullet"
 
-    def __init__(self, tau_m: float = 0.03, physics: str = "PYB_GND_DRAG_DW"):
+    def __init__(self, tau_m: float = 0.03, physics: str = "PYB_GND_DRAG_DW", tau_down: float | None = None):
         import pybullet as pb
         from gym_pybullet_drones.envs.CtrlAviary import CtrlAviary
         from gym_pybullet_drones.utils.enums import DroneModel, Physics
@@ -233,6 +233,7 @@ class PyBulletBackend:
         self.kf = self.env.KF
         self.f_max = self.kf * self.env.MAX_RPM ** 2
         self.tau_m = tau_m
+        self.tau_down = tau_m if tau_down is None else tau_down  # asymmetric spin-down (slow-motor variant)
         self.rpm = np.full(4, self.env.HOVER_RPM)
 
     def reset(self, st: DroneState) -> None:
@@ -246,7 +247,8 @@ class PyBulletBackend:
     def substep(self, f_des: np.ndarray) -> None:
         rpm_sp = np.sqrt(np.clip(f_des, 0.0, self.f_max) / self.kf)
         if self.tau_m > 1e-6:
-            self.rpm = self.rpm + (1.0 - math.exp(-SUB_DT / self.tau_m)) * (rpm_sp - self.rpm)
+            tau = np.where(rpm_sp >= self.rpm, self.tau_m, self.tau_down)
+            self.rpm = self.rpm + (1.0 - np.exp(-SUB_DT / tau)) * (rpm_sp - self.rpm)
         else:
             self.rpm = rpm_sp
         self.env.step(self.rpm.reshape(1, 4))
@@ -269,6 +271,7 @@ class InterfaceConfig:
     p_drop: float = 0.0            # Bernoulli observation dropout
     dropout_mode: str = "zoh"      # "zoh" (Lemma 1.1) or "zero" (naive masking)
     obs_noise: dict = field(default_factory=dict)  # per-field std: {"p": .., "v": .., "w": ..}
+    obs_bias_fn: object = None     # optional DroneState -> position bias (3,): systematic, pose-correlated b(s)
 
 
 class CTBRDrone:
@@ -320,6 +323,8 @@ class CTBRDrone:
 
     def observe(self) -> DroneState:
         y = self.obs_fifo[0].copy()
+        if self.iface.obs_bias_fn is not None:
+            y.p = y.p + self.iface.obs_bias_fn(y)
         for k, std in self.iface.obs_noise.items():
             setattr(y, k, getattr(y, k) + std * self.np_rng.standard_normal(3))
         self.dropped = self.iface.p_drop > 0 and self.np_rng.random() < self.iface.p_drop
@@ -335,8 +340,9 @@ def make_source(seed: int = 0, overrides: dict | None = None, iface: InterfaceCo
     return CTBRDrone(L2FBackend(seed, overrides), iface=iface, seed=seed)
 
 
-def make_target(tau_m: float = 0.03, iface: InterfaceConfig | None = None, seed: int = 0) -> CTBRDrone:
-    return CTBRDrone(PyBulletBackend(tau_m), iface=iface, seed=seed)
+def make_target(tau_m: float = 0.03, iface: InterfaceConfig | None = None, seed: int = 0,
+                tau_down: float | None = None) -> CTBRDrone:
+    return CTBRDrone(PyBulletBackend(tau_m, tau_down=tau_down), iface=iface, seed=seed)
 
 
 # --------------------------------------------------------------------------------------------------

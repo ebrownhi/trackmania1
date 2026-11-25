@@ -35,20 +35,23 @@
 
 ## 2. Next steps (prioritized)
 
-### P1 — Close the gaps in the weak/negative results (≈1–2 days)
-1. **H1' retest (Exp 7b).** PPO with Δa penalty λ ∈ {0, 0.3} *combined with* action buffer + latency randomization; longer budget (≥2M steps, vectorized L2F). Success: λ>0 lowers crash rate at d=2–4 vs λ=0 with equal d=0 performance.
-2. **H3' retest (Exp 5b).** 3–4× DAgger budget for GRU students; a harder sensor channel (larger obs delay 2–3, 20% dropout, pose-correlated bias b(φ) per Prop 2.7) so the observability gap is large enough for ρ_obs to be meaningful.
-3. **Regime fix: make the target delay-sensitive.** The PyBullet CF2X (30 ms motors) is more delay-tolerant than L2F. Add a target variant with slower/asymmetric motor lag (e.g. τ_up 40 ms / τ_down 80 ms) so d = 2–6 matters in the target, then re-run Exp 4b / 8b there.
+### P1 — Close the gaps in the weak/negative results ✅ done 2026-11-25 (see REAL_SIM_RESULTS.md, Round 2)
+1. [x] **H1' retest (Exp 7b/7c).** → partial support; warm-start penalty works, from-scratch stalls. PPO with Δa penalty λ ∈ {0, 0.3} *combined with* action buffer + latency randomization; longer budget (≥2M steps, vectorized L2F). Success: λ>0 lowers crash rate at d=2–4 vs λ=0 with equal d=0 performance.
+2. [x] **H3' retest (Exp 5b).** → partial support. 3–4× DAgger budget for GRU students; a harder sensor channel (larger obs delay 2–3, 20% dropout, pose-correlated bias b(φ) per Prop 2.7) so the observability gap is large enough for ρ_obs to be meaningful.
+3. [x] **Regime fix** → diagnosed instead: fragility is L2F's actuator model; target kept, delay tested at d ≥ 12. The PyBullet CF2X (30 ms motors) is more delay-tolerant than L2F. Add a target variant with slower/asymmetric motor lag (e.g. τ_up 40 ms / τ_down 80 ms) so d = 2–6 matters in the target, then re-run Exp 4b / 8b there.
 
-### P2 — The headline H4 experiment (≈2 days)
-4. **Swift-style residual fine-tuning with RL.** Start from the nominal PPO policy, fine-tune in the residual-augmented L2F (`L2FBackend.residual_fn` + τ̂ + d̂), evaluate in PyBullet. Compare at equal source budget against: nominal, dynamics DR, latency DR, target-trained PPO oracle.
-5. **GP observation residual.** Add pose-correlated systematic sensor bias in the target and fit the GP perception residual (Prop 2.7: zero-mean noise alone gives μ_GP → 0, so include this as the null control).
+### P2 — The headline H4 experiment ✅ done 2026-11-25 (Exp 9; racing-course version moves to P3)
+4. [x] **Swift-style residual fine-tuning with RL (Exp 9).** → 69% gap closed on nominal target, DR negative. Start from the nominal PPO policy, fine-tune in the residual-augmented L2F (`L2FBackend.residual_fn` + τ̂ + d̂), evaluate in PyBullet. Compare at equal source budget against: nominal, dynamics DR, latency DR, target-trained PPO oracle.
+5. [x] **GP observation residual (Exp 9).** → works; needs ground-truth-pose input. Add pose-correlated systematic sensor bias in the target and fit the GP perception residual (Prop 2.7: zero-mean noise alone gives μ_GP → 0, so include this as the null control).
 
 ### P3 — Proposal method matrix & reporting (≈2 days)
+*Status after round 2:* still to do. Open issues feeding into it: d̂ misidentification on the perturbed target
+(use scripted excitation for Step 0 instead of policy rollouts); λ=0.3 from-scratch PPO stalling (use warm-start or a
+λ ramp); GRU_rand seed variance (more DAgger data).
 6. **Full matrix on one consistent task:** {nominal PPO, DR, teacher–student, residual FT} × {exact-state, sensor-limited} × {nominal, perturbed target}, ≥3 seeds, held-out course.
 7. **Proposal metrics everywhere:** completion, collision-free completion, median/tail lap time, tracking error, crash rate, action smoothness, target/source ratio; one-factor robustness curves.
 8. **Baselines:** classical controller (geometric expert), target-trained PPO reference, feed-forward teacher cloning.
-9. **Update docs:** replace claims in `THEORY_AND_HYPOTHESES.md` / `EMPIRICAL_THEORY_VERIFICATION.md` that the real-sim results don't support; keep `REAL_SIM_RESULTS.md` current.
+9. [x] **Update docs:** status notes added to THEORY_AND_HYPOTHESES.md / EMPIRICAL_THEORY_VERIFICATION.md; replace claims in `THEORY_AND_HYPOTHESES.md` / `EMPIRICAL_THEORY_VERIFICATION.md` that the real-sim results don't support; keep `REAL_SIM_RESULTS.md` current.
 
 ### P4 — Housekeeping ✅ done 2026-11-25
 10. [x] **Reproducible env:** `pixi run setup-sims` (`code/setup_sims.sh`) clones pinned l2f / gym-pybullet-drones / TMNF-C, applies `code/patches/tmnf-c-macos.patch`, builds the l2f wheel, installs `--no-deps` extras.
