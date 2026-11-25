@@ -1,0 +1,30 @@
+[workspace]
+name = "racing-sim2sim"
+version = "0.1.0"
+description = "16-831 Final Project: Sim-to-Sim Transfer in Drone and Trackmania Racing"
+channels = ["conda-forge"]
+platforms = ["osx-arm64"]
+
+[dependencies]
+python = "3.12.*"
+pip = "*"
+pybind11 = "*"
+pytorch = ">=2.2"
+numpy = ">=1.26,<2.2"
+scipy = "*"
+scikit-learn = "*"
+gymnasium = ">=1.0"
+matplotlib = "*"
+tensorboard = "*"
+tqdm = "*"
+pytest = "*"
+pybullet = "*"
+mujoco = ">=3.1"
+numba = "*"
+pyyaml = "*"
+
+[tasks]
+# Third-party simulators (l2f, gym-pybullet-drones, TMNF-C sources) — run once after `pixi install`
+setup-sims = "bash setup_sims.sh"
+# Fast regression suite (~1 min): frame conventions, determinism, Prop. 2.1 delay limit
+test = { cmd = "python -m pytest -q ../tests", env = { MPLCONFIGDIR = "/tmp/mpl_cache" } }

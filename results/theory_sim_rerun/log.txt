@@ -1,0 +1,9 @@
+=== Running 16-831 Parallel Verification Suite across 5 seeds ===
+  [Worker Seed 4] finished in 151.24s
+  [Worker Seed 1] finished in 152.64s
+  [Worker Seed 0] finished in 153.05s
+  [Worker Seed 3] finished in 153.43s
+  [Worker Seed 2] finished in 153.49s
+
+=== ALL 5 SEEDS COMPLETED IN 154.51s ===
+Saved results to: ../results/theory_sim_rerun/results.json

@@ -1,0 +1,127 @@
+diff --git a/src/vec_env.c b/src/vec_env.c
+index ae679f0..42b0d4f 100644
+--- a/src/vec_env.c
++++ b/src/vec_env.c
+@@ -8,16 +8,24 @@
+ 
+ #include <errno.h>
+ #include <limits.h>
++#ifdef __linux__
+ #include <linux/futex.h>
++#include <sys/syscall.h>
++#endif
+ #include <math.h>
+ #include <pthread.h>
+ #include <stdatomic.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <sys/syscall.h>
+ #include <unistd.h>
+ 
++#ifndef __linux__
++typedef int cpu_set_t;
++static pthread_mutex_t g_tmnf_futex_mu = PTHREAD_MUTEX_INITIALIZER;
++static pthread_cond_t g_tmnf_futex_cv = PTHREAD_COND_INITIALIZER;
++#endif
++
+ #include "vehicle_respawn.h"
+ 
+ const float TMNF_OBSERVATION_LOOKAHEAD_METERS[
+@@ -125,6 +133,11 @@ static cpu_set_t *parse_cpu_list(uint32_t thread_count)
+ 	const char *text = getenv("TMNF_PIN_CPUS");
+ 	if (text == NULL)
+ 		return NULL;
++#ifndef __linux__
++	(void)thread_count;
++	env_fail("TMNF_PIN_CPUS thread affinity is only supported on Linux");
++	return NULL;
++#else
+ 	if (*text == '\0')
+ 		env_fail("TMNF_PIN_CPUS is empty");
+ 
+@@ -153,17 +166,23 @@ static cpu_set_t *parse_cpu_list(uint32_t thread_count)
+ 		cursor = end + 1;
+ 	}
+ 	return sets;
++#endif
+ }
+ 
+ static void pin_thread(const cpu_set_t *set)
+ {
++#ifdef __linux__
+ 	if (pthread_setaffinity_np(pthread_self(), sizeof(*set), set) != 0)
+ 		env_fail("cannot pin worker thread");
++#else
++	(void)set;
++#endif
+ }
+ 
+ static void futex_wait_for_change(
+ 	_Atomic uint32_t *address, uint32_t expected)
+ {
++#ifdef __linux__
+ 	for (;;) {
+ 		int result = (int)syscall(
+ 			SYS_futex, (uint32_t *)address,
+@@ -173,15 +192,29 @@ static void futex_wait_for_change(
+ 		if (errno != EINTR)
+ 			env_fail("futex wait failed");
+ 	}
++#else
++	pthread_mutex_lock(&g_tmnf_futex_mu);
++	if (atomic_load_explicit(address, memory_order_acquire) == expected)
++		pthread_cond_wait(&g_tmnf_futex_cv, &g_tmnf_futex_mu);
++	pthread_mutex_unlock(&g_tmnf_futex_mu);
++#endif
+ }
+ 
+ static void futex_wake(_Atomic uint32_t *address, int count)
+ {
++#ifdef __linux__
+ 	if (syscall(
+ 			SYS_futex, (uint32_t *)address,
+ 			FUTEX_WAKE_PRIVATE, count, NULL, NULL, 0) < 0) {
+ 		env_fail("futex wake failed");
+ 	}
++#else
++	(void)address;
++	(void)count;
++	pthread_mutex_lock(&g_tmnf_futex_mu);
++	pthread_cond_broadcast(&g_tmnf_futex_cv);
++	pthread_mutex_unlock(&g_tmnf_futex_mu);
++#endif
+ }
+ 
+ static void worker_range(
+@@ -239,6 +272,7 @@ static TmnfVecWorkerPool *worker_pool_create(
+ 	atomic_init(&pool->generation, 0);
+ 	atomic_init(&pool->completed, 0);
+ 	pool->cpu_sets = parse_cpu_list(thread_count);
++#ifdef __linux__
+ 	if (pool->cpu_sets != NULL) {
+ 		if (pthread_getaffinity_np(
+ 				pthread_self(), sizeof(pool->caller_original_cpu_set),
+@@ -248,6 +282,7 @@ static TmnfVecWorkerPool *worker_pool_create(
+ 		pin_thread(&pool->cpu_sets[0]);
+ 		pool->caller_was_pinned = 1;
+ 	}
++#endif
+ 	if (thread_count == 1)
+ 		return pool;
+ 
+@@ -285,12 +320,14 @@ static void worker_pool_destroy(TmnfVecWorkerPool *pool)
+ 	}
+ 	free(pool->workers);
+ 	free(pool->threads);
++#ifdef __linux__
+ 	if (pool->caller_was_pinned != 0 &&
+ 		pthread_setaffinity_np(
+ 			pthread_self(), sizeof(pool->caller_original_cpu_set),
+ 			&pool->caller_original_cpu_set) != 0) {
+ 		env_fail("cannot restore caller thread affinity");
+ 	}
++#endif
+ 	free(pool->cpu_sets);
+ 	free(pool);
+ }

@@ -1,0 +1,31 @@
+Part A done in 131s
+Part B done in 576s
+
+Part A: body-velocity estimation RMSE [m/s] (mean ± std over 3 seeds)
+  [novel]
+    FF_fixed   source 0.095 ± 0.003   target 0.160 ± 0.011   (OOD ratio 1.69x)
+    GRU_fixed  source 0.077 ± 0.002   target 0.164 ± 0.007   (OOD ratio 2.12x)
+    FF_rand    source 0.115 ± 0.007   target 0.152 ± 0.005   (OOD ratio 1.33x)
+    GRU_rand   source 0.091 ± 0.005   target 0.154 ± 0.002   (OOD ratio 1.70x)
+  [vio]
+    FF_fixed   source 0.091 ± 0.002   target 0.153 ± 0.012   (OOD ratio 1.68x)
+    GRU_fixed  source 0.082 ± 0.003   target 0.150 ± 0.016   (OOD ratio 1.83x)
+    FF_rand    source 0.109 ± 0.005   target 0.140 ± 0.004   (OOD ratio 1.28x)
+    GRU_rand   source 0.101 ± 0.005   target 0.142 ± 0.006   (OOD ratio 1.41x)
+
+Part B: closed loop, target (PyBullet) — eff_rmse [m] / gates / crash
+  teacher (exact state): 0.210 ± 0.000 / 1.00 / 0.00
+  [novel]
+    FF_fixed  tgt 0.815 ± 0.061 / 0.16 / 1.00    (src 0.794 / 0.22)
+    FF_rand   tgt 0.815 ± 0.020 / 0.15 / 1.00    (src 0.840 / 0.19)
+    GRU_fixed tgt 0.388 ± 0.116 / 0.46 / 0.22    (src 0.319 / 0.70)
+    GRU_rand  tgt 0.620 ± 0.066 / 0.29 / 1.00    (src 0.632 / 0.36)
+    rho_obs GRU_fixed_vs_FF_fixed: [0.35, 0.83, 0.88]
+    rho_obs GRU_rand_vs_FF_rand: [0.2, 0.48, 0.28]
+  [vio]
+    FF_fixed  tgt 0.237 ± 0.020 / 0.78 / 0.00    (src 0.279 / 0.69)
+    FF_rand   tgt 0.248 ± 0.022 / 0.71 / 0.00    (src 0.327 / 0.62)
+    GRU_fixed tgt 0.237 ± 0.012 / 0.73 / 0.00    (src 0.269 / 0.74)
+    GRU_rand  tgt 0.282 ± 0.015 / 0.62 / 0.00    (src 0.243 / 0.87)
+    rho_obs GRU_fixed_vs_FF_fixed: [0.64, -5.76, 0.13]
+    rho_obs GRU_rand_vs_FF_rand: [0.11, -4.62, -1.56]
