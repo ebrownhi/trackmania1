@@ -1,0 +1,47 @@
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+Exp 21: 45 jobs in 684s
+
+[figure8] gate_frac / crash  (mean ± std over 3 seeds)
+  clean teacher_exact  source_l2f: 1.000 ± 0.000 / 0.00 || target_nominal: 1.000 ± 0.000 / 0.00 || target_perturbed: 0.972 ± 0.039 / 0.00
+  clean alpha_beta     source_l2f: 1.000 ± 0.000 / 0.00 || target_nominal: 0.750 ± 0.121 / 0.07 || target_perturbed: 0.678 ± 0.037 / 0.03
+  clean kin_ff         source_l2f: 1.000 ± 0.000 / 0.00 || target_nominal: 0.722 ± 0.034 / 0.00 || target_perturbed: 0.722 ± 0.037 / 0.03
+  clean kin_gru_fixed  source_l2f: 1.000 ± 0.000 / 0.00 || target_nominal: 0.828 ± 0.004 / 0.00 || target_perturbed: 0.658 ± 0.124 / 0.07
+  clean kin_gru_rand   source_l2f: 1.000 ± 0.000 / 0.00 || target_nominal: 0.753 ± 0.045 / 0.03 || target_perturbed: 0.631 ± 0.049 / 0.10
+  mid   teacher_exact  source_l2f: 1.000 ± 0.000 / 0.00 || target_nominal: 1.000 ± 0.000 / 0.00 || target_perturbed: 0.972 ± 0.039 / 0.00
+  mid   alpha_beta     source_l2f: 0.967 ± 0.036 / 0.03 || target_nominal: 0.717 ± 0.065 / 0.07 || target_perturbed: 0.536 ± 0.124 / 0.30
+  mid   kin_ff         source_l2f: 0.975 ± 0.025 / 0.03 || target_nominal: 0.719 ± 0.081 / 0.03 || target_perturbed: 0.442 ± 0.233 / 0.53
+  mid   kin_gru_fixed  source_l2f: 0.981 ± 0.017 / 0.00 || target_nominal: 0.756 ± 0.045 / 0.03 || target_perturbed: 0.578 ± 0.163 / 0.10
+  mid   kin_gru_rand   source_l2f: 0.944 ± 0.067 / 0.03 || target_nominal: 0.736 ± 0.008 / 0.00 || target_perturbed: 0.608 ± 0.100 / 0.27
+  hard  teacher_exact  source_l2f: 1.000 ± 0.000 / 0.00 || target_nominal: 1.000 ± 0.000 / 0.00 || target_perturbed: 0.972 ± 0.039 / 0.00
+  hard  alpha_beta     source_l2f: 0.347 ± 0.109 / 0.73 || target_nominal: 0.550 ± 0.105 / 0.17 || target_perturbed: 0.500 ± 0.183 / 0.50
+  hard  kin_ff         source_l2f: 0.211 ± 0.044 / 0.97 || target_nominal: 0.664 ± 0.108 / 0.03 || target_perturbed: 0.469 ± 0.112 / 0.27
+  hard  kin_gru_fixed  source_l2f: 0.106 ± 0.031 / 0.97 || target_nominal: 0.753 ± 0.020 / 0.00 || target_perturbed: 0.489 ± 0.153 / 0.20
+  hard  kin_gru_rand   source_l2f: 0.094 ± 0.016 / 1.00 || target_nominal: 0.792 ± 0.078 / 0.00 || target_perturbed: 0.614 ± 0.111 / 0.07
+
+[ellipse3d] gate_frac / crash  (mean ± std over 3 seeds)
+  clean teacher_exact  source_l2f: 1.000 ± 0.000 / 0.00 || target_nominal: 1.000 ± 0.000 / 0.00 || target_perturbed: 0.997 ± 0.004 / 0.00
+  clean alpha_beta     source_l2f: 0.469 ± 0.257 / 0.67 || target_nominal: 0.689 ± 0.161 / 0.27 || target_perturbed: 0.575 ± 0.085 / 0.37
+  clean kin_ff         source_l2f: 0.197 ± 0.106 / 1.00 || target_nominal: 0.472 ± 0.112 / 0.57 || target_perturbed: 0.336 ± 0.113 / 0.90
+  clean kin_gru_fixed  source_l2f: 0.506 ± 0.339 / 0.63 || target_nominal: 0.694 ± 0.055 / 0.00 || target_perturbed: 0.606 ± 0.097 / 0.23
+  clean kin_gru_rand   source_l2f: 0.628 ± 0.265 / 0.53 || target_nominal: 0.794 ± 0.014 / 0.00 || target_perturbed: 0.683 ± 0.054 / 0.00
+  mid   teacher_exact  source_l2f: 1.000 ± 0.000 / 0.00 || target_nominal: 1.000 ± 0.000 / 0.00 || target_perturbed: 0.997 ± 0.004 / 0.00
+  mid   alpha_beta     source_l2f: 0.378 ± 0.226 / 0.73 || target_nominal: 0.589 ± 0.122 / 0.17 || target_perturbed: 0.553 ± 0.173 / 0.37
+  mid   kin_ff         source_l2f: 0.128 ± 0.037 / 1.00 || target_nominal: 0.356 ± 0.063 / 0.73 || target_perturbed: 0.189 ± 0.035 / 0.77
+  mid   kin_gru_fixed  source_l2f: 0.475 ± 0.297 / 0.63 || target_nominal: 0.706 ± 0.041 / 0.03 || target_perturbed: 0.433 ± 0.103 / 0.53
+  mid   kin_gru_rand   source_l2f: 0.506 ± 0.304 / 0.67 || target_nominal: 0.781 ± 0.037 / 0.00 || target_perturbed: 0.586 ± 0.042 / 0.27
+  hard  teacher_exact  source_l2f: 1.000 ± 0.000 / 0.00 || target_nominal: 1.000 ± 0.000 / 0.00 || target_perturbed: 0.997 ± 0.004 / 0.00
+  hard  alpha_beta     source_l2f: 0.164 ± 0.048 / 1.00 || target_nominal: 0.444 ± 0.170 / 0.43 || target_perturbed: 0.375 ± 0.130 / 0.57
+  hard  kin_ff         source_l2f: 0.136 ± 0.027 / 1.00 || target_nominal: 0.283 ± 0.082 / 0.80 || target_perturbed: 0.169 ± 0.092 / 1.00
+  hard  kin_gru_fixed  source_l2f: 0.183 ± 0.094 / 1.00 || target_nominal: 0.617 ± 0.123 / 0.27 || target_perturbed: 0.264 ± 0.106 / 0.83
+  hard  kin_gru_rand   source_l2f: 0.183 ± 0.024 / 1.00 || target_nominal: 0.756 ± 0.104 / 0.00 || target_perturbed: 0.558 ± 0.020 / 0.27

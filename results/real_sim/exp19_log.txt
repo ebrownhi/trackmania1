@@ -1,0 +1,29 @@
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+Exp 19: 21 runs in 1545s
+
+[figure8] gate_frac | clean_completion | crash  (mean ± std, 3 seeds)
+  none          source_l2f: 1.000 ± 0.000 | 1.000 ± 0.000 | 0.000 ± 0.000 || target_nominal: 1.000 ± 0.000 | 0.667 ± 0.471 | 0.000 ± 0.000 || target_perturbed: 1.000 ± 0.000 | 1.000 ± 0.000 | 0.000 ± 0.000
+  full          source_l2f: 0.778 ± 0.104 | 0.000 ± 0.000 | 0.000 ± 0.000 || target_nominal: 0.719 ± 0.175 | 0.000 ± 0.000 | 0.000 ± 0.000 || target_perturbed: 0.722 ± 0.219 | 0.000 ± 0.000 | 0.000 ± 0.000
+  no_mass       source_l2f: 0.972 ± 0.039 | 0.667 ± 0.471 | 0.000 ± 0.000 || target_nominal: 0.944 ± 0.079 | 0.667 ± 0.471 | 0.000 ± 0.000 || target_perturbed: 0.889 ± 0.157 | 0.567 ± 0.419 | 0.000 ± 0.000
+  no_thrust     source_l2f: 0.917 ± 0.118 | 0.667 ± 0.471 | 0.000 ± 0.000 || target_nominal: 0.889 ± 0.104 | 0.333 ± 0.471 | 0.000 ± 0.000 || target_perturbed: 0.917 ± 0.118 | 0.000 ± 0.000 | 0.000 ± 0.000
+  no_motor_lag  source_l2f: 0.861 ± 0.142 | 0.333 ± 0.471 | 0.000 ± 0.000 || target_nominal: 0.839 ± 0.061 | 0.000 ± 0.000 | 0.000 ± 0.000 || target_perturbed: 0.819 ± 0.069 | 0.000 ± 0.000 | 0.000 ± 0.000
+  no_latency    source_l2f: 0.972 ± 0.039 | 0.667 ± 0.471 | 0.000 ± 0.000 || target_nominal: 0.942 ± 0.041 | 0.333 ± 0.471 | 0.000 ± 0.000 || target_perturbed: 0.944 ± 0.039 | 0.000 ± 0.000 | 0.000 ± 0.000
+  latency_only  source_l2f: 1.000 ± 0.000 | 1.000 ± 0.000 | 0.000 ± 0.000 || target_nominal: 1.000 ± 0.000 | 0.833 ± 0.236 | 0.000 ± 0.000 || target_perturbed: 1.000 ± 0.000 | 1.000 ± 0.000 | 0.000 ± 0.000
+
+[ellipse3d] gate_frac | clean_completion | crash  (mean ± std, 3 seeds)
+  none          source_l2f: 0.797 ± 0.230 | 0.367 ± 0.450 | 0.267 ± 0.309 || target_nominal: 1.000 ± 0.000 | 0.400 ± 0.432 | 0.000 ± 0.000 || target_perturbed: 1.000 ± 0.000 | 0.400 ± 0.424 | 0.000 ± 0.000
+  full          source_l2f: 0.675 ± 0.301 | 0.333 ± 0.471 | 0.000 ± 0.000 || target_nominal: 0.750 ± 0.136 | 0.000 ± 0.000 | 0.000 ± 0.000 || target_perturbed: 0.667 ± 0.245 | 0.000 ± 0.000 | 0.000 ± 0.000
+  no_mass       source_l2f: 0.856 ± 0.204 | 0.300 ± 0.424 | 0.000 ± 0.000 || target_nominal: 0.917 ± 0.118 | 0.333 ± 0.471 | 0.000 ± 0.000 || target_perturbed: 0.861 ± 0.142 | 0.000 ± 0.000 | 0.000 ± 0.000
+  no_thrust     source_l2f: 0.886 ± 0.101 | 0.000 ± 0.000 | 0.000 ± 0.000 || target_nominal: 0.806 ± 0.142 | 0.000 ± 0.000 | 0.000 ± 0.000 || target_perturbed: 0.806 ± 0.142 | 0.000 ± 0.000 | 0.000 ± 0.000
+  no_motor_lag  source_l2f: 0.828 ± 0.188 | 0.000 ± 0.000 | 0.000 ± 0.000 || target_nominal: 0.775 ± 0.107 | 0.000 ± 0.000 | 0.000 ± 0.000 || target_perturbed: 0.778 ± 0.104 | 0.000 ± 0.000 | 0.000 ± 0.000
+  no_latency    source_l2f: 0.972 ± 0.039 | 0.667 ± 0.471 | 0.000 ± 0.000 || target_nominal: 0.894 ± 0.031 | 0.000 ± 0.000 | 0.000 ± 0.000 || target_perturbed: 0.944 ± 0.039 | 0.000 ± 0.000 | 0.000 ± 0.000
+  latency_only  source_l2f: 1.000 ± 0.000 | 1.000 ± 0.000 | 0.000 ± 0.000 || target_nominal: 1.000 ± 0.000 | 0.667 ± 0.471 | 0.000 ± 0.000 || target_perturbed: 0.972 ± 0.039 | 0.333 ± 0.471 | 0.000 ± 0.000
