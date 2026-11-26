@@ -128,3 +128,62 @@ def test_prop_2_1_delay_limit_pybullet():
         g = g_crit_pure(d)
         unstable = measured_unstable(mk, CFG.mass / MASS_TGT, d)
         assert not unstable(0.93 * g) and unstable(1.07 * g)
+
+
+def test_step0_scripted_sysid_perturbed_target():
+    """Lag-filtered scripted multi-sine SysID recovers exact d_hat on perturbed (kf x 1.15) PyBullet targets."""
+    from exp6_knn_residual import OneStepSource
+    from exp9_residual_finetune import scripted_sysid_action
+
+    taus = {"tau20ms": 0.02, "tau30ms": 0.03, "tau50ms": 0.05}
+    models = {k: OneStepSource(v) for k, v in taus.items()}
+    for d_true in [0, 2]:
+        drone = make_target(tau_m=0.03, iface=InterfaceConfig(action_delay=d_true), seed=7)
+        drone.backend.env.KF *= 1.15
+        s0 = drone.reset(DroneState.hover(p=(0.0, 0.0, 2.0)))
+        S, A = [s0], []
+        for k in range(250):
+            a = scripted_sysid_action(k, RL_DT, drone.hover_action, phase=0.4)
+            S.append(drone.step(a))
+            A.append(a)
+        A = np.array(A)
+        best = None
+        for tname, fS in models.items():
+            for d in range(4):
+                r, X, uf = fS.residuals(S, A, d, return_u_filt=True)
+                Phi = np.column_stack([np.ones(len(X)), uf, [s.R.T @ s.v for s, _ in X]])
+                th, *_ = np.linalg.lstsq(Phi, r[:, :3], rcond=None)
+                rms = float(np.sqrt(np.mean((r[:, :3] - Phi @ th) ** 2)))
+                if best is None or rms < best[0]:
+                    best = (rms, tname, d)
+        assert best[2] == d_true and best[1] == "tau30ms"
+
+
+def test_gate_racing_se3_invariance_and_spatial_expert():
+    """Verify Guardrail #6 SE(3) invariance of racing observations and time-free classical expert completion."""
+    from collections import deque
+    from racing_env import FastCenterline, GateRacingEnv, GeometricGateController, build_racing_obs, evaluate_racing
+
+    c = Course(kind="ellipse3d")
+    cl = FastCenterline(c)
+    st1 = c.start_state()
+    ah = deque([np.zeros(4)] * 8, maxlen=8)
+    obs1, _ = build_racing_obs(st1, cl, 0, 0, ah, 8, sensor_limited=False)
+
+    # Apply arbitrary 3D translation + yaw rotation to both track and drone state
+    yaw = 1.13
+    Rz = np.array([[ np.cos(yaw), -np.sin(yaw), 0.0],
+                   [ np.sin(yaw),  np.cos(yaw), 0.0],
+                   [ 0.0,          0.0,         1.0]])
+    shift = np.array([12.4, -7.8, 3.5])
+    cl2 = FastCenterline(c)
+    cl2.pts = (cl.pts @ Rz.T) + shift
+    cl2.gates = (cl.gates @ Rz.T) + shift
+    cl2.tangents = cl.tangents @ Rz.T
+    st2 = DroneState(Rz @ st1.p + shift, Rz @ st1.R, Rz @ st1.v, st1.w.copy())
+    obs2, _ = build_racing_obs(st2, cl2, 0, 0, ah, 8, sensor_limited=False)
+    assert np.allclose(obs1, obs2, atol=1e-6)
+
+    env = GateRacingEnv(course_kind="figure8", domain="source", random_start_gate=False, seed=0)
+    ev = evaluate_racing(GeometricGateController(), env, n_eval=2)
+    assert ev["gate_frac"] == 1.0 and ev["crash_rate"] == 0.0 and np.isfinite(ev["median_lap_s"])

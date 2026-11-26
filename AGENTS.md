@@ -18,6 +18,7 @@ Welcome! Read this file **before** writing simulator wrappers, training scripts,
 * `docs/SIMULATOR_PHYSICS_AUDIT.md` — Exact ODEs, URDF constants, frame conventions, and source-code gotchas across Swift, `L2F`, `gym-pybullet-drones`, `TMNF-C`, and `Linesight`/`TMInterface`.
 * `docs/EMPIRICAL_THEORY_VERIFICATION.md` — Gemini toy-simulator verification (`theory_sim/`); error bars are SEM, see corrections in the next doc.
 * `docs/REAL_SIM_RESULTS.md` — Verified results on the real `l2f` → `gym-pybullet-drones` pair (`real_sim/`, `code/sims/drone_pair.py`, outputs in `results/real_sim/`).
+* `docs/FOLLOWUP_RIFFS_PROPOSAL.md` — Literature-backed Phase-2 research proposal with 14 concrete extensions across Steps 0–5 (`ASAP`, `CAPS`/`L2C2`, `Neural-Fly`, `MOPO`, `DORAEMON`, `DIDA`, `RMA`/`DreamWaQ`).
 
 ---
 
@@ -26,11 +27,8 @@ Welcome! Read this file **before** writing simulator wrappers, training scripts,
 1. **NEVER modify sibling homework folders:**
    * Do **not** edit or install packages into `../hw3/.venv`, `../hw3/.venv-fresh`, or `../16831-F26-HW-upstream-REFERENCE-ONLY/`.
    * Those environments are pinned to legacy course versions (`torch==1.12.1`, `gym==0.25.1`, `mujoco==2.2.1`) that conflict with `gymnasium>=1.0` and modern PyTorch/MPS.
-2. **Use a dedicated Python 3.11 environment inside `Final Project/`:**
-   * Prefer **`pixi` (`conda-forge`)** (`brew install cmake ninja pixi`) so `pybullet`, `mujoco`, `pytorch`, `scipy`, `scikit-learn`, and `numba` install from prebuilt `osx-arm64` binaries in seconds.
-   * **Apple Clang 21 + `pybullet` Trap:** PyPI has *no* `macosx_arm64` wheel for `pybullet`, and bare `pip install pybullet` fails on Clang 21 (`fdopen` zlib macro clash + `-Wincompatible-function-pointer-types`). Either install `pybullet` from `conda-forge` via `pixi` or pass:
-     `CFLAGS="-Dfdopen=fdopen -Wno-error=incompatible-function-pointer-types -Wno-error=int-conversion"`.
-   * Prefer the actively maintained Gymnasium fork `learnsyslab/gym-pybullet-drones` over legacy `utiasDSL` `gym==0.21` pins.
+2. **Use a dedicated Python 3.12 `pixi` environment inside `Final Project/code/`:**
+   * Run `pixi install` then `pixi run setup-sims` (`code/setup_sims.sh`), which uses `conda-forge` `pybullet`/`pytorch`/`mujoco` and builds the `l2f` wheel cleanly via Homebrew `python@3.12` (avoiding spaces-in-path `CFLAGS` issues). Run `pixi run test` to execute the fast regression suite.
 3. **Reusable 16-831 Patterns (Read-Only Reference):**
    * **GAE($\lambda$) & Advantage Standardization:** `../16831-F26-HW/hw2/rob831/agents/pg_agent.py`
    * **Normalized State-Delta ($\Delta s$) Residual Regression:** `../hw3/hw4/rob831/hw4_part1/models/ff_model.py`
@@ -57,19 +55,19 @@ Welcome! Read this file **before** writing simulator wrappers, training scripts,
 
 Our mathematical stress-test (`docs/THEORY_AND_HYPOTHESES.md`) proved six ways a literal/naive implementation breaks **H1–H4**. Follow these invariants across all code:
 
-1. **Action-Smoothness Penalty Required in Nominal PPO (H1 Guardrail):**
-   * Discrete delay stability collapses $4.5\times$ by $d=3$ ticks ($g_{\text{crit}}(d) = 2\sin(\frac{\pi}{2(2d+1)})$). Unregularized PPO saturates $\tanh$ into bang-bang chattering that limit-cycles into Trackmania walls even at $d=1\text{--}2$. Always include $-\lambda_{\Delta a}\|a_t - a_{t-1}\|^2$ in nominal rewards (and ablate $\lambda_{\Delta a} = 0$ explicitly). Also ensure the drone course reaches $v_{\text{peak}} \ge 10\text{ m/s}$ at $\Delta t_{\text{RL}} = 10\text{--}20\text{ ms} \lesssim \tau_m$ so quadratic drag and motor lag are active.
-2. **Use an Action History Buffer $a_{t - d_{\max} : t - 1}$, Not Just `previous_action` $a_{t-1}$ (H2 Guardrail):**
-   * For total loop delay $d = d_a + d_o \ge 2$, $(s_{t-d_o}, a_{t-1})$ is **non-Markovian** (missing $d-1$ in-flight actions) and cannot learn Smith-predictor state forward-propagation (Theorem 2.2). Standardize feed-forward actors on `(obs, route, a_{t - d_max : t - 1})` ($d_{\max} \approx 6\text{--}8$), keeping `a_{t-1}`-only as an ablation.
+1. **Apply Action-Smoothness Penalty via Warm-Start / Ramp, Not Large From-Scratch Penalty (H1' Guardrail):**
+   * Discrete delay stability collapses $4.5\times$ by $d=3$ ticks ($g_{\text{crit}}(d) = 2\sin(\frac{\pi}{2(2d+1)})$; relay limit-cycle period is $(4d+2)\Delta t$). However, large $\lambda_{\Delta a} = 0.3$ *from scratch* can stall PPO exploration (Exp 7b). Train base PPO with small/zero $\lambda_{\Delta a}$ (`0.0`–`0.05`) and ramp/warm-start $\lambda_{\Delta a} \in [0.1, 0.3]$ during fine-tuning (Exp 7c). Note `L2F` Crazyflie's $T/W \approx 1.47$ caps course speed near $3.55\text{ m/s}$.
+2. **Use an Action History Buffer $a_{t - d_{\max} : t - 1}$, Not Just `previous_action` $a_{t-1}$ (H2' Guardrail):**
+   * For total loop delay $d = d_a + d_o \ge 2$, $(s_{t-d_o}, a_{t-1})$ is **non-Markovian** (Theorem 2.2). Standardize actors on `(obs, route, a_{t - d_max : t - 1})` ($d_{\max} \approx 8\text{--}16$), keeping `a_{t-1}`-only as an ablation. Note zero-mean dynamics DR does not fix directional airframe offsets (Exp 9).
 3. **Implement Observation Dropout via Zero-Order Hold (ZOH), NEVER Zero-Masking (Lemma 1.1):**
-   * Setting dropped observations to `0.0` injects huge $\mathcal{O}(p_{\text{drop}} L_\pi \|h(s_t)\|)$ impulses. Always hold the last valid reading $o_t = (1 - m_t) y_{t - d_o} + m_t o_{t-1}$ and optionally append the validity bit $(1 - m_t)$.
-4. **Distill Recurrent Students via On-Policy DAgger Over Randomized Transitions (H3 Guardrail):**
-   * Distilling a GRU/LSTM student on **fixed nominal source dynamics $\mathcal{M}_S$** trains an $f_S$-locked observer whose small smoothing gain $K \ll 1$ **amplifies steady-state Drone physics mismatch by $\frac{1-K}{K}$** and drives hidden states $h_t$ out-of-distribution (Theorem 2.4), making recurrent students *worse* than feed-forward on Drone! Always distill recurrent students inside the **domain- and latency-randomized** simulator (RMA-style joint filtering + implicit SysID), and report the normalized **Observability Gap Recovery Ratio** $\rho_{\text{obs}}$.
-5. **Time-Align Target Rollouts by Estimated Delay $\hat{d}$ Before Fitting `k-NN` Dynamics Residuals (H4 Guardrail):**
-   * In Trackmania ($\Delta f \equiv 0$) with loop delay $d \ge 1$, regressing $\Delta v / \Delta t$ naively on client-logged $(\hat{s}_t, a_t)$ instead of executed $a_{t-d}$ learns a **massive phantom acceleration residual** $J_{v,a}(s)\mathbb{E}[a_{t-d} - a_t \mid s, a] \neq 0$ (e.g., $+10\text{--}25\text{ m/s}^2$ at braking zones!), falsifying H4 (Theorem 2.5). Always estimate integer delay $\hat{d} = \arg\min_{d'} \sum \|\hat{s}_{t+1} - f_S(\hat{s}_t, a_{t-d'})\|^2$ first (via scripted-action replay) and fit `k-NN` on aligned $(\hat{s}_t, a_{t-\hat{d}})$.
-6. **SE(3)-Invariant Body-Frame `k-NN` Features + Systematic Sensor Bias $b(s)$ for `GP` (H4 Guardrail):**
-   * Never pass world position $p_W$ into `k-NN` dynamics residuals—it will fail completely on the held-out course. Use strictly body-frame features $(v_B, \omega_B, a_t, a_{t-1} \text{ or } \hat{\Omega}_{t-1})$ with kernel decay to $0$ outside rollout support.
-   * Swift's GP perception residual collapses to $\hat{\mu}_{\text{GP}} \to 0$ under pure zero-mean i.i.d. noise/dropout (Prop. 2.7). Sensor-limited targets must include **relative-pose-correlated systematic bias** $b(\phi_{\text{rel}}(s))$ (e.g., oblique gate-viewing-angle PnP bias or perspective bias).
+   * Setting dropped observations to `0.0` crashes every seed for $p_{\text{drop}} \ge 0.2$ (Exp 3). Always hold the last valid reading $o_t = (1 - m_t) y_{t - d_o} + m_t o_{t-1}$.
+4. **Distill Recurrent Students via On-Policy DAgger Over Randomized Transitions (H3' Guardrail):**
+   * Always distill GRU students inside the **domain- and latency-randomized** simulator with sufficient DAgger rollouts under realistic sensor delay/dropout/bias, and report **std across seeds** (never SEM!) alongside $\rho_{\text{obs}}$.
+5. **Run Step-0 Scripted Multi-Sine Joint $(\hat{d}, \hat{\tau}_m)$ Lag-Filtered SysID Before `k-NN` Fitting (H4' Guardrail):**
+   * On real `L2F` $\to$ `PyBullet`, delay-only scans fail without matching $\tau_m$ (Exp 6), and regressing thrust-scale residuals against raw unfiltered white-noise commands $a_{t-d}$ biases $\hat{d}$ by $+1$ tick (Exp 9). Always use **Step-0 scripted multi-sine excitation** and regress affine scale terms against the **reconstructed lag-filtered rotor thrust** $\bar{u}_{\text{filt}}(\tau', d')$.
+6. **SE(3)-Invariant Body-Frame `k-NN` Features + Ground-Truth-Pose `GP` Input (H4' Guardrail):**
+   * Never pass world position $p_W$ into `k-NN` dynamics residuals (gave $0\%$ held-out gain vs. $-60\%$ RMSE in body frame in Exp 6/8).
+   * Always fit the GP perception residual $o_i - s_i^T$ on **ground-truth (mocap) pose** $\phi(s_i^T)$—conditioning on noisy observed pose $\phi(o_i)$ leaks sensor noise into the regressor and learns a spurious bias under the i.i.d. null (Exp 9)!
 
 ---
 

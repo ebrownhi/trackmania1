@@ -61,11 +61,12 @@ class OneStepSource:
         self.tau_r, self.tau_f = self.be.motor_taus()
         self.hover_a = CTBR.encode(9.81, np.zeros(3))
 
-    def residuals(self, S, A, d):
+    def residuals(self, S, A, d, return_u_filt: bool = False):
         """6D body-frame residuals for every tick t >= 10 of one flight, assuming delay d."""
         a_exec = lambda k: A[k - d] if k - d >= 0 else self.hover_a
         rpm = self.be.force_to_rpm(np.full(4, self.be.base_params["dynamics"]["mass"] * 9.81 / 4))
-        out, X = [], []
+        c0, c1, c2 = self.be.thrust_poly
+        out, X, Uf = [], [], []
         for k in range(len(A)):
             s, s1 = S[k], S[k + 1]
             if k >= 10:
@@ -80,10 +81,16 @@ class OneStepSource:
                 X.append((s, a_exec(k)))
             # advance the reconstructed rotor state with L2F's own closed-form asymmetric filter
             sp = self.be.force_to_rpm(CTBR.rotor_forces(a_exec(k), s.w))
+            f_sub = 0.0
             for _ in range(SUBSTEPS):
                 tau = np.where(sp >= rpm, self.tau_r, self.tau_f)
                 al = np.exp(-SUB_DT / tau)
                 rpm = al * rpm + (1 - al) * sp
+                f_sub += float(np.sum(c0 + c1 * rpm + c2 * rpm * rpm))
+            if k >= 10:
+                Uf.append(f_sub / SUBSTEPS)
+        if return_u_filt:
+            return np.array(out), X, np.array(Uf)
         return np.array(out), X
 
 

@@ -15,5 +15,5 @@ pixi run test                         # ~15 s regression suite
 - `code/sims/drone_pair.py` — shared CTBR rate loop, L2F + PyBullet backends, delay/dropout interface, expert, courses
 - `real_sim/` — experiments on the real simulators (`expN_*.py`), outputs in `results/real_sim/`
 - `theory_sim/` — earlier toy micro-simulators (see corrections in `docs/REAL_SIM_RESULTS.md`)
-- `docs/` — theory, simulator audit, results, and `PLAN_OF_ACTION.md`
+- `docs/` — theory, simulator audit, results (`REAL_SIM_RESULTS.md`), `PLAN_OF_ACTION.md`, and literature-backed next-step extensions (`FOLLOWUP_RIFFS_PROPOSAL.md`)
 - `AGENTS.md` — guardrails and onboarding for coding agents

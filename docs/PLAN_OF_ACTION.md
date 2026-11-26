@@ -44,14 +44,17 @@
 4. [x] **Swift-style residual fine-tuning with RL (Exp 9).** → 69% gap closed on nominal target, DR negative. Start from the nominal PPO policy, fine-tune in the residual-augmented L2F (`L2FBackend.residual_fn` + τ̂ + d̂), evaluate in PyBullet. Compare at equal source budget against: nominal, dynamics DR, latency DR, target-trained PPO oracle.
 5. [x] **GP observation residual (Exp 9).** → works; needs ground-truth-pose input. Add pose-correlated systematic sensor bias in the target and fit the GP perception residual (Prop 2.7: zero-mean noise alone gives μ_GP → 0, so include this as the null control).
 
-### P3 — Proposal method matrix & reporting (≈2 days)
-*Status after round 2:* still to do. Open issues feeding into it: d̂ misidentification on the perturbed target
-(use scripted excitation for Step 0 instead of policy rollouts); λ=0.3 from-scratch PPO stalling (use warm-start or a
-λ ramp); GRU_rand seed variance (more DAgger data).
-6. **Full matrix on one consistent task:** {nominal PPO, DR, teacher–student, residual FT} × {exact-state, sensor-limited} × {nominal, perturbed target}, ≥3 seeds, held-out course.
-7. **Proposal metrics everywhere:** completion, collision-free completion, median/tail lap time, tracking error, crash rate, action smoothness, target/source ratio; one-factor robustness curves.
-8. **Baselines:** classical controller (geometric expert), target-trained PPO reference, feed-forward teacher cloning.
-9. [x] **Update docs:** status notes added to THEORY_AND_HYPOTHESES.md / EMPIRICAL_THEORY_VERIFICATION.md; replace claims in `THEORY_AND_HYPOTHESES.md` / `EMPIRICAL_THEORY_VERIFICATION.md` that the real-sim results don't support; keep `REAL_SIM_RESULTS.md` current.
+### P3 — Proposal method matrix & reporting ✅ done 2026-11-25 (`Exp 10` + `Exp 9` fix)
+6. [x] **Full matrix on one consistent task (`real_sim/exp10_method_matrix.py`, `real_sim/racing_env.py`):** `{classical_expert, nominal_ppo, dr_ppo, ff_student, gru_student_fixed, gru_student_rand, residual_ft_ppo, target_oracle_ppo}` across `{figure8 train, ellipse3d held-out}` × `{source_l2f, target_nominal, target_perturbed}`, 3 seeds (`550k` source budget). `residual_ft_ppo` hits `1.000 ± 0.000` gate completion and `1.00` collision-free completion on held-out `ellipse3d` (`9/9` exact Step-0 calibrations).
+7. [x] **Proposal metrics everywhere:** completion, collision-free completion, median/`p90` lap time, centerline & gate tracking error, crash rate, action smoothness, target/source ratio, and one-factor robustness sweeps (`delay`, `dropout`, `kf_scale`).
+8. [x] **Baselines:** time-free spatial `GeometricGateController`, nominal source PPO, in-domain PyBullet PPO oracle, and feed-forward teacher cloning.
+9. [x] **Update docs:** updated `THEORY_AND_HYPOTHESES.md`, `EMPIRICAL_THEORY_VERIFICATION.md`, `REAL_SIM_RESULTS.md`, and `FOLLOWUP_RIFFS_PROPOSAL.md`.
+
+### P3+ — Phase-2 Literature Riffs ✅ done 2026-11-25 (`docs/FOLLOWUP_RIFFS_PROPOSAL.md`, `Exp 11–14`)
+- [x] **`Exp 11` (`R1.1` CAPS + L2C2 smoothness):** Eliminated `Exp 7b` 2/3-seed stall (`3/3` learned from scratch, `0%` crashes, `44×` smoother, `0.079 m` target error beating two-stage warm-start `0.182 m`).
+- [x] **`Exp 12` (`R2.3 + R3.1/R3.3` DIDA Chunk-4 + Track-Free RMA):** `0.975 ± 0.030` gates at `80%` command-packet drop; uncovered & fixed gate-coordinate shortcut trap (`4.33 → 1.31 m/s` velocity RMSE on `ellipse3d`).
+- [x] **`Exp 13` (`R3.2` Neural-Fly Live 100 Hz Composite RLS):** `1.000 ± 0.000` (`18/18` gates, zero target pre-calibration) in `0.5g` crosswind (`−67%` RMSE) and mid-race `-25%` motor loss (`−45%` vs PID), plus algebraic-loop ablation.
+- [x] **`Exp 14` (`R4.1 + R4.2 + R5.1` CMU ASAP $\Delta a$ + MOPO Ensemble vs. Swift `k-NN`):** `swift_mopo_ft` achieved `1.00` clean completion across all `4/4` cells; identified `ASAP`'s source-actuator saturation boundary (`kf × 1.20`) and `11×` $\Delta f \equiv 0$ phantom-residual collapse.
 
 ### P4 — Housekeeping ✅ done 2026-11-25
 10. [x] **Reproducible env:** `pixi run setup-sims` (`code/setup_sims.sh`) clones pinned l2f / gym-pybullet-drones / TMNF-C, applies `code/patches/tmnf-c-macos.patch`, builds the l2f wheel, installs `--no-deps` extras.

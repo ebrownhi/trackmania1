@@ -26,7 +26,7 @@ from common import OUT, np, plt, save_json, mean_std, fmt
 SEEDS = [0, 1, 2]
 ARMS = ["zeroshot", "nominal_ft", "dr_ft", "residual_ft", "oracle_ft"]
 TARGETS = ["nominal", "perturbed", "biased", "noisy"]
-FT_STEPS = int(sys.argv[1]) if len(sys.argv) > 1 else 200_000
+FT_STEPS = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 200_000
 N_CAL = 4            # target calibration episodes x 4 s = 1600 samples (Swift used ~800-1000 at 50 Hz)
 LAM = 0.1
 TAUS = {"l2f_native": None, "tau20ms": 0.02, "tau30ms": 0.03, "tau50ms": 0.05}
@@ -59,9 +59,19 @@ def dyn_sampler(rng):
             "tau_rise_scale": rng.uniform(0.3, 1.5), "tau_fall_scale": rng.uniform(0.08, 1.5)}
 
 
+def scripted_sysid_action(k: int, dt: float, hover_a: np.ndarray, phase: float) -> np.ndarray:
+    """Persistent multi-sine excitation around hover (Proposal Sec. 3 Step 0 scripted replay)."""
+    t = k * dt
+    da0 = 0.22 * np.sin(2 * np.pi * 1.3 * t + phase) + 0.16 * np.sin(2 * np.pi * 3.7 * t + 2 * phase)
+    da1 = 0.18 * np.sin(2 * np.pi * 1.9 * t + phase) + 0.12 * np.sin(2 * np.pi * 4.3 * t)
+    da2 = 0.18 * np.cos(2 * np.pi * 1.7 * t + phase) + 0.12 * np.cos(2 * np.pi * 3.9 * t)
+    da3 = 0.12 * np.sin(2 * np.pi * 1.1 * t + phase)
+    return np.clip(hover_a + np.array([da0, da1, da2, da3]), -1.0, 1.0)
+
+
 def calibrate(model, target, seed):
-    """Fly the base policy in the target (+ exploration noise), log client-side obs/actions and ground truth.
-    Returns k-NN dynamics residual, tau_hat, d_hat, and a GP observation-bias model (or None)."""
+    """Step-0 scripted multi-sine flight (1 ep) + base-policy target rollouts (N_CAL-1 eps), total N_CAL x 4 s.
+    Recovers (d_hat, tau_hat) via lag-filtered joint scan, plus k-NN dynamics & GP observation-bias models."""
     from sklearn.gaussian_process import GaussianProcessRegressor
     from sklearn.gaussian_process.kernels import RBF, WhiteKernel
     from exp6_knn_residual import KNNResidual, OneStepSource, feats
@@ -69,38 +79,56 @@ def calibrate(model, target, seed):
 
     env = make_hover_env(LAM, 5000 + seed, ep_s=4.0, **target_kw(target, seed))
     rng = np.random.default_rng(seed)
-    flights, Xgp, Ygp = [], [], []
+    sysid_flights, flights, Xgp, Ygp = [], [], [], []
     for ep in range(N_CAL):
         o, _ = env.reset(seed=20_000 + 100 * seed + ep)
+        if ep == 0:
+            # Start Step-0 scripted excitation from level hover so multi-sine probes clean 4s trajectory
+            from sims.drone_pair import DroneState
+            env.obs_state = env.drone.reset(DroneState.hover(p=(0.0, 0.0, 2.0)))
         S_obs, S_true, A = [env.obs_state], [env.drone.true_state()], []
+        hover_a = env.drone.hover_action.copy()
+        phase = float(rng.uniform(0, 2 * np.pi))
+        step_k = 0
         while True:
-            a, _ = model.predict(o, deterministic=True)
-            a = np.clip(a + 0.1 * rng.standard_normal(4), -1, 1)
+            if ep == 0:
+                a = scripted_sysid_action(step_k, 0.01, hover_a, phase)
+            else:
+                a, _ = model.predict(o, deterministic=True)
+                a = np.clip(a + 0.12 * rng.standard_normal(4), -1, 1)
             o, r, term, trunc, info = env.step(a)
             S_obs.append(env.obs_state)
             S_true.append(info["state"])
             A.append(np.asarray(info["a"]))
+            step_k += 1
             if term or trunc:
                 break
+        # Use clean velocity/attitude states (or S_obs when position-only noise doesn't touch v/w)
         flights.append((S_obs, np.array(A)))
-        # GP input = ground-truth (mocap) pose, the same quantity the augmented source applies b_hat to. Using the
-        # *observed* pose as input leaks the noise into the regressor (x = p + n, y = n) and learns a spurious bias.
+        if ep == 0:
+            sysid_flights.append((S_obs, np.array(A)))
+        # GP input = ground-truth (mocap) pose, the same quantity the augmented source applies b_hat to.
         Xgp += [st.p for st in S_true]
         Ygp += [so.p - st.p for so, st in zip(S_obs, S_true)]
 
-    # Step 0 system ID: joint (d', tau) scan with an affine thrust/drag correction (Exp 6)
-    best = None
+    # Step 0 system ID on scripted multi-sine excitation: regress r_lin against lag-filtered rotor thrust u_filt
+    # (regressing against raw unfiltered a[0] biases d_hat by +1 tick under kf_scale != 1 because 30ms motor lag
+    # weights a_{t-1} more heavily than a_t during [t, t+dt]!)
+    best_id = None
     for tname, tau in TAUS.items():
         fS = OneStepSource(tau)
         for d in range(4):
-            rs, Xs = zip(*[fS.residuals(S, A, d) for S, A in flights])
-            r, X = np.concatenate(rs), sum(Xs, [])
-            Phi = np.column_stack([np.ones(len(X)), [a[0] for _, a in X], [s.R.T @ s.v for s, _ in X]])
-            th, *_ = np.linalg.lstsq(Phi, r[:, :3], rcond=None)
-            rms = float(np.sqrt(np.mean((r[:, :3] - Phi @ th) ** 2)))
-            if best is None or rms < best[0]:
-                best = (rms, tname, tau, d, r, X)
-    _, tname, tau_hat, d_hat, r, X = best
+            rs, Xs, Ufs = zip(*[fS.residuals(S, A, d, return_u_filt=True) for S, A in sysid_flights])
+            r_id, X_id, uf_id = np.concatenate(rs), sum(Xs, []), np.concatenate(Ufs)
+            Phi = np.column_stack([np.ones(len(X_id)), uf_id, [s.R.T @ s.v for s, _ in X_id]])
+            th, *_ = np.linalg.lstsq(Phi, r_id[:, :3], rcond=None)
+            rms = float(np.sqrt(np.mean((r_id[:, :3] - Phi @ th) ** 2)))
+            if best_id is None or rms < best_id[0]:
+                best_id = (rms, tname, tau, d)
+    _, tname, tau_hat, d_hat = best_id
+    fS_best = OneStepSource(tau_hat)
+    rs_all, Xs_all = zip(*[fS_best.residuals(S, A, d_hat) for S, A in flights])
+    r, X = np.concatenate(rs_all), sum(Xs_all, [])
     knn = KNNResidual().fit(feats(X, "body10"), r)
 
     Xgp, Ygp = np.array(Xgp), np.array(Ygp)
