@@ -50,11 +50,15 @@
 8. [x] **Baselines:** time-free spatial `GeometricGateController`, nominal source PPO, in-domain PyBullet PPO oracle, and feed-forward teacher cloning.
 9. [x] **Update docs:** updated `THEORY_AND_HYPOTHESES.md`, `EMPIRICAL_THEORY_VERIFICATION.md`, `REAL_SIM_RESULTS.md`, and `FOLLOWUP_RIFFS_PROPOSAL.md`.
 
-### P3+ — Phase-2 Literature Riffs ✅ done 2026-11-25 (`docs/FOLLOWUP_RIFFS_PROPOSAL.md`, `Exp 11–14`)
+### P3+ — Phase-2 Literature Riffs ✅ ALL DONE 2026-11-26 (`docs/FOLLOWUP_RIFFS_PROPOSAL.md`, `Exp 11–18`)
 - [x] **`Exp 11` (`R1.1` CAPS + L2C2 smoothness):** Eliminated `Exp 7b` 2/3-seed stall (`3/3` learned from scratch, `0%` crashes, `44×` smoother, `0.079 m` target error beating two-stage warm-start `0.182 m`).
 - [x] **`Exp 12` (`R2.3 + R3.1/R3.3` DIDA Chunk-4 + Track-Free RMA):** `0.975 ± 0.030` gates at `80%` command-packet drop; uncovered & fixed gate-coordinate shortcut trap (`4.33 → 1.31 m/s` velocity RMSE on `ellipse3d`).
 - [x] **`Exp 13` (`R3.2` Neural-Fly Live 100 Hz Composite RLS):** `1.000 ± 0.000` (`18/18` gates, zero target pre-calibration) in `0.5g` crosswind (`−67%` RMSE) and mid-race `-25%` motor loss (`−45%` vs PID), plus algebraic-loop ablation.
 - [x] **`Exp 14` (`R4.1 + R4.2 + R5.1` CMU ASAP $\Delta a$ + MOPO Ensemble vs. Swift `k-NN`):** `swift_mopo_ft` achieved `1.00` clean completion across all `4/4` cells; identified `ASAP`'s source-actuator saturation boundary (`kf × 1.20`) and `11×` $\Delta f \equiv 0$ phantom-residual collapse.
+- [x] **`Exp 15` (`R0.1 + R0.2` Fisher Safe Excitation + 10-Tick Parametric Shooting):** `1.0 s` exact asymmetric `(d̂=2, τ_up=20 ms, τ_down=80 ms)` SysID (`0.000 ms` RMSE); showed parametric-only shooting closes `18%` vs `65%` for 6D `k-NN` due to unexposed $J$, `km/kf`, and downwash.
+- [x] **`Exp 16` (`R1.2 + R1.3` Architectural EMA Bandwidth + Residual-over-Classical RL):** `53–73%` lower target hold error across `d=0..8` via 5-line EMA wrapper; `15–24×` early sample-efficiency gain (`50k` steps) with Song et al. (*Sci. Robot.* 2023) asymptotic E2E crossover near saturation.
+- [x] **`Exp 17` (`R2.1 + R2.2` DORAEMON Curriculum DR + CVaR-PPO):** `doraemon_ppo` eliminated `source_d0` crashes (`47% → 0%`) and beat `fixed_wide_dr` by `+16..+32` gate pts (`3.1 s` faster `p90` laps); verified Prop 2.3 risk-speed conservatism on `CVaR_{0.35}`.
+- [x] **`Exp 18` (`R4.3 + R5.2` 2-Round Bootstrapped Swift + 10-Track 3D Benchmark):** `−33%` on-policy residual RMSE (`0.360 → 0.241 m/s²`), `−50%` 10-track macro tracking error (`0.135 → 0.067 m`), and `1.00` clean completion across `9/10` unseen 3D circuits at a `16 s` target budget.
 
 ### P4 — Housekeeping ✅ done 2026-11-25
 10. [x] **Reproducible env:** `pixi run setup-sims` (`code/setup_sims.sh`) clones pinned l2f / gym-pybullet-drones / TMNF-C, applies `code/patches/tmnf-c-macos.patch`, builds the l2f wheel, installs `--no-deps` extras.

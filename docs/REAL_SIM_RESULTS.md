@@ -29,6 +29,10 @@ Run any experiment with `../code/.pixi/envs/default/bin/python real_sim/<script>
 | Riff R2.3 + R3.1/R3.3: DIDA 4-step chunking & RMA | Exp 12 | ✅ **DIDA Chunk-4** holds **`1.000 → 0.975 ± 0.030`** gates (`0` crashes) up to **`80%` command-packet loss**; track-free **RMA/GRU** `2–3×`s FF gate completion (`0.24 vs 0.10`), cuts `v_B` RMSE `33%` (`1.97 → 1.31 m/s`), detects target thrust shift (`z_thr = +0.58…+0.71`), and exposes a **gate-coordinate shortcut trap** (`4.33 m/s` sign-inversion on `ellipse3d` when observers see track coordinates) |
 | Riff R3.2: Neural-Fly live 100 Hz composite RLS | Exp 13 | ✅ **Zero offline target data:** **`1.000 ± 0.000` (`18/18` gates, 3 laps)** on 3D `ellipse3d` in `0.5g` turbulent crosswind (`0.112 m` RMSE: `−67%` vs unadapted, `−43%` vs `PID`) and mid-race `-25%` motor loss (`−45%` vs `PID`); confirms **algebraic-loop divergence** (`0.167` gates) when `a_cmd` enters basis $\phi$ |
 | Riff R4.1 + R4.2: CMU ASAP $\Delta a$ vs Swift + MOPO | Exp 14 | ✅ **`swift_mopo_ft`** (`5-MLP` ensemble + $-\beta\sigma_{\text{ep}}$, `2.3–3.3×` OOD separation) hits **`1.00` clean completion across all `4/4` `(target × course)` cells**; **`ASAP` $\Delta a$** gets best `0.5 s` drift (`0.107 m`) & `1.00` clean completion within `L2F`'s motor envelope (`target_nominal`), but clips at `a=+1` when target exceeds source ceiling (`kf × 1.20`, `T/W = 2.70 > 1.47`) |
+| Riff R0.1 + R0.2: Fisher safe SysID & 10-tick shooting | Exp 15 | ✅ **Fisher excitation** recovers exact asymmetric `(d̂=2, τ_up=20 ms, τ_down=80 ms)` in **`1.0 s`** (`0.000 ms` RMSE vs `0.20 ms` hand multi-sine); parametric-only 10-tick shooting cuts 3 s drift only `18%` (`7.69 → 6.33 m`) vs **`−65%` (`2.69 m`) for 6D `k-NN`** because $J$, `km/kf`, and downwash lie outside `L2F`'s exposed parameters |
+| Riff R1.2 + R1.3: Architectural EMA & Residual-over-Classical RL | Exp 16 | ✅ **5-line EMA filter (`α=0.50–0.70`, `λ_rew=0`)** cuts PyBullet hold error **`53–73%`** across `d=0..8` (`0.092 m` @ `d=8` vs `0.311 m` unfiltered); **Residual-over-Classical** gives **`15–24×` more gates at `50k` steps** (`1.000` vs `0.066` E2E on `target_nominal`), while unconstrained E2E overtakes near `L2F` saturation at `450k+` (reproducing Song et al., *Sci. Robot.* 2023) |
+| Riff R2.1 + R2.2: DORAEMON curriculum DR + CVaR-PPO | Exp 17 | ✅ **`doraemon_ppo`** eliminates `source_d0` crashes (`47% → 0%`, `gf: 0.736 → 0.972`) and beats `fixed_wide_dr` across all PyBullet targets (`0.917–1.000` vs `0.671–0.762` gates, up to **`3.1 s` faster `p90` tail laps**); `CVaR_{0.35}` tail-weighting over-brakes (`0.66–0.74` gates), confirming Prop 2.3's risk-speed trade-off |
+| Riff R4.3 + R5.2: 2-Round Bootstrapped Swift & 10-Track 3D Suite | Exp 18 | ✅ At equal `16 s` (`1,600`-tick) target budget (`kf × 1.25, d=3`), **2-round active bootstrap** cuts high-speed residual RMSE **`33%` (`0.360 → 0.241 m/s²`)**, halves **10-track macro error (`0.135 → 0.067 m`)**, and hits **`1.00` clean completion on `9/10` unseen 3D circuits** (`0.900 ± 0.000` macro clean vs `0.472` zero-shot & `0.50` direct `16 s` target PPO) |
 
 ## Key results
 
@@ -174,6 +178,50 @@ Compares action-space alignment (`ASAP`, He et al., *RSS 2025*) against accelera
 | `asap_delta_a_ft` | **`1.00`** (`0.112 m` / `5.30 s`) | **`1.00`** (`0.125 m` / `5.36 s`) | `0.67` (`0.140 m` / `5.15 s`) | `0.00` (`0.141 m` / `5.30 s` — *motor clip!*) |
 
 - **Forward-model & $\Delta f \equiv 0$ falsification:** On `target_nominal`, `asap_delta_a` achieves the lowest `0.5 s` open-loop drift (`0.107 ± 0.031 m` vs `0.124 m` `k-NN` and `0.190 m` nominal), while on `target_perturbed` (`T/W = 2.70 > L2F`'s `1.47` ceiling) action deltas clip at `a = +1.0`. Ensemble epistemic $\sigma_{\text{ep}}$ separates OOD states by **`2.31–3.30×`**. On the $\Delta f \equiv 0, d=3$ control, Step-0 alignment (`d̂ = 3.00` exact) collapses phantom `k-NN` residuals **`11×` (`0.190 → 0.0174 m/s²`)**.
+
+---
+
+### Exp 15 — Fisher-Optimal Safe Excitation & 10-Tick Multi-Step Parametric Shooting (3 seeds)
+([exp15_fisher_shooting_sysid.py](file:///Users/ebrownhi/Desktop/Robot%20Learning/Final%20Project/real_sim/exp15_fisher_shooting_sysid.py))
+- **Part A — Asymmetric Rotor-Lag + Delay SysID (`true d = 2, τ_up = 20 ms, τ_down = 80 ms, kf × 1.20`):** Pre-optimizing harmonic phases/amplitudes for D-optimality $\log\det(\Phi^\top\Phi)$ inside a `0.50 m` `L2F` safety sphere recovers **`100%` exact `d̂ = 2` in `0.5 s` (`50` ticks, `max_r = 0.37 m`)** and **`0.000 ± 0.000 ms` asymmetric `(τ̂_up, τ̂_down)` RMSE in `1.0 s`** (vs `0.196 ± 0.278 ms` for hand-picked multi-sine at `1.0 s`).
+- **Part B — 10-Tick Parametric Shooting vs. Non-Parametric `k-NN` (3 s Replay on Held-Out `ellipse3d`):** Optimizing scalar `L2F` overrides `(thrust_scale, τ_rise, τ_fall, drag_xy, drag_z)` over 10-tick (`100 ms`) windows trims 3 s replay drift by only **`18%` (`7.69 → 6.33 m`)**, whereas **6D SE(3) `step0_knn` cuts drift by `65%` (`7.69 → 2.69 ± 0.59 m`, and `0.94 → 0.326 m` @ `1 s`)**, proving that non-parametric state-action residuals are indispensable when structural mismatches ($J$, `km/kf = 5.4×`, downwash) lie outside the source simulator's exposed parameter vector.
+
+---
+
+### Exp 16 — Architectural EMA Bandwidth Filter & Residual-RL over Classical Control (3 seeds)
+([exp16_bandwidth_and_residual_policy.py](file:///Users/ebrownhi/Desktop/Robot%20Learning/Final%20Project/real_sim/exp16_bandwidth_and_residual_policy.py))
+- **Part A — Structural Low-Pass Actuator Wrapper (`a_t = α a_{t-1} + (1−α) u_θ(o_t)`, `λ_rew = 0`, `600k` steps):**
+  - `ema_0.00` (unfiltered): Target hold error `0.307 m @ d=0`, `0.393 m @ d=2`, `0.436 m @ d=4`, `0.424 m @ d=6`, `0.311 m @ d=8`.
+  - **`ema_0.50` (`16 Hz` cutoff):** Cuts target hold error **`53–73%`** across all delays (`0.137 m @ d=0`, `0.186 m @ d=2`, `0.128 m @ d=4`, `0.116 m @ d=6`, `0.144 m @ d=8`).
+  - **`ema_0.70` (`7.6 Hz` cutoff):** Achieves **`0.104 m @ d=6` and `0.092 m @ d=8` (`−70%`)**, directly confirming Proposition 2.1's Bode bandwidth–delay trade-off purely architecturally.
+- **Part B — Hybrid Residual-RL over `GeometricGateController` (`a = clip(a_cls + 0.45 π_θ, −1, 1)`) on Held-Out `ellipse3d`:**
+  - **Low-sample regime (`50k` steps):** `res_over_cls` reaches **`1.000 ± 0.000` gates (`0.67` clean) on `target_nominal`** (vs `0.066` `e2e_ppo`, **`15×` gain**), **`0.750` vs `0.031` (`24×`)** on `target_perturbed`, and lifts `source_l2f` from `0.250` (`classical_0k`) to **`0.448` @ `250k`** (vs `0.111` `e2e_ppo`).
+  - **Asymptotic crossover (`450k+` steps):** Near `L2F`'s `T/W = 1.47` ceiling on `ellipse3d`, unconstrained `e2e_ppo` (`0.583` @ `450k` → `0.80+` @ `550k`) overtakes bounded `res_over_cls` (`0.153`), reproducing Song et al. (*Science Robotics* 2023): reference-tracking priors give `10–20×` early sample efficiency, while unconstrained RL reaches higher asymptotic agility when the classical prior saturates actuators.
+
+---
+
+### Exp 17 — DORAEMON Entropy-Maximized Curriculum DR & CVaR-PPO (`550k` steps, 3 seeds)
+([exp17_doraemon_cvar_dr.py](file:///Users/ebrownhi/Desktop/Robot%20Learning/Final%20Project/real_sim/exp17_doraemon_cvar_dr.py))
+
+| Arm (`ellipse3d` held-out) | `source_d0` Gate Frac (Crash) | `target_nominal` Gate Frac (`p90` Lap) | `target_perturbed` Gate Frac (`p90` Lap) | `target_extreme_ood` (`d=6, kf=1.30`) Gate Frac (`CVaR_25`) |
+|---|---|---|---|---|
+| `nominal_ppo` | `0.736 ± 0.187` (`0.47` cr) | `1.000 ± 0.000` (`5.36 s`) | `1.000 ± 0.000` (`5.23 s`) | `1.000 ± 0.000` (`1.00`) |
+| `fixed_wide_dr` | `0.875 ± 0.037` (`0.00` cr) | `0.762 ± 0.070` (`7.56 s`) | `0.671 ± 0.193` (`9.13 s`) | `0.685 ± 0.182` (`0.67`) |
+| **`doraemon_ppo`** | **`0.972 ± 0.039` (`0.00` cr)** | **`0.917 ± 0.068` (`6.16 s`)** | **`0.935 ± 0.047` (`6.00 s`)** | **`1.000 ± 0.000` (`1.00`)** |
+| `doraemon_cvar_ppo` (`α=0.35`) | `0.743 ± 0.044` (`0.06` cr) | `0.688 ± 0.183` (`6.71 s`) | `0.667 ± 0.324` (`6.37 s`) | `0.660 ± 0.253` (`0.54`) |
+
+---
+
+### Exp 18 — Active 2-Round Bootstrapped Swift & 10-Track Procedural 3D Benchmark (`16 s` Target Budget, 3 seeds)
+Compares model-free direct target RL against 1-round and 2-round active bootstrapped `Swift + MOPO` at **strictly equal `1,600`-tick (`16.0 s`) target budget** on a high-gain delayed target (`kf × 1.25, d = 3`), then evaluates zero-shot across **10 procedural 3D circuits** ([exp18_bootstrapped_swift_and_10tracks.py](file:///Users/ebrownhi/Desktop/Robot%20Learning/Final%20Project/real_sim/exp18_bootstrapped_swift_and_10tracks.py)):
+
+- **On-policy high-speed residual RMSE:** `0.360 ± 0.129 m/s²` (`1-batch`) → **`0.241 ± 0.089 m/s²` (`2-round bootstrap`, `−33%`)**.
+- **Equal `16 s` target budget on `ellipse3d` (`kf × 1.25, d = 3`):** `zeroshot_base` `0.17` clean (`0.162 m` err), `direct_res_policy_1600` `0.06` clean (`0.163 m`), `direct_target_ppo_1600` `0.50` clean (`0.151 m`) vs. **`swift_mopo_1round` `1.00` clean (`0.101 m`)** and **`swift_mopo_2round` `1.00` clean (`0.098 m`)**.
+- **10-Track Procedural 3D Benchmark Macro-Average (`figure8`, `ellipse3d`, `split_s_3d`, `corkscrew_3d`, `tilted_hairpin`, `saddle_3d`, `diving_chicane`, `banked_oval_3d`, `ascending_esses`, `trefoil_3d`):**
+  - `zeroshot_base`: `cln = 0.472 ± 0.267`, `trk = 0.135 m`
+  - `direct_target_ppo_1600`: `cln = 0.472 ± 0.281`, `trk = 0.129 m`
+  - `swift_mopo_1round`: **`cln = 0.900 ± 0.000` (`1.00` clean on `9/10` 3D circuits)**, `trk = 0.076 m`
+  - **`swift_mopo_2round`**: **`cln = 0.900 ± 0.000` (`1.00` clean on `9/10` 3D circuits)**, **`trk = 0.067 m` (`−50%` tracking error across 10 unseen 3D tracks!)**
 
 ## Setup & reproducibility notes
 - Reproducible environment & build scripts are captured in [code/pixi.toml](file:///Users/ebrownhi/Desktop/Robot%20Learning/Final%20Project/code/pixi.toml) and [code/setup_sims.sh](file:///Users/ebrownhi/Desktop/Robot%20Learning/Final%20Project/code/setup_sims.sh); run `pixi run --manifest-path code/pixi.toml test` (`17/17` tests passing in ~5 s).
