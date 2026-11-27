@@ -17,6 +17,7 @@ Welcome! Read this file **before** writing simulator wrappers, training scripts,
 * `docs/MAC_STACK_AND_PIVOTS.md` — Local M5 Pro toolchain audit, `pixi`/`uv` bootstrap commands, `TMInterface` lockstep finding, `AsyncWallClockSocketServer` architecture, and time-boxed Pivot Triggers.
 * `docs/SIMULATOR_PHYSICS_AUDIT.md` — Exact ODEs, URDF constants, frame conventions, and source-code gotchas across Swift, `L2F`, `gym-pybullet-drones`, `TMNF-C`, and `Linesight`/`TMInterface`.
 * `docs/EMPIRICAL_THEORY_VERIFICATION.md` — Gemini toy-simulator verification (`theory_sim/`); error bars are SEM, see corrections in the next doc.
+* `docs/WORK_WRITEUP.md` — **Start here:** status of every drone hypothesis, what was done in each round, the Exp 10 audit and the Round 5–6 fixes (Exp 19–24), and what is still open.
 * `docs/REAL_SIM_RESULTS.md` — Verified results on the real `l2f` → `gym-pybullet-drones` pair (`real_sim/`, `code/sims/drone_pair.py`, outputs in `results/real_sim/`).
 * `docs/FOLLOWUP_RIFFS_PROPOSAL.md` — Literature-backed Phase-2 research proposal with 14 concrete extensions across Steps 0–5 (`ASAP`, `CAPS`/`L2C2`, `Neural-Fly`, `MOPO`, `DORAEMON`, `DIDA`, `RMA`/`DreamWaQ`).
 
