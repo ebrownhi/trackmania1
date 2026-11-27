@@ -95,8 +95,9 @@ Nothing open blocks the report on the drone side; Trackmania and the report itse
 - Trackmania: TMNF-C builds; no Python bindings or experiments yet. Half the proposal's claims need it; the proposal allows
   reporting an integration failure and completing the matrix on the drone platform instead.
 - Final report: not started; the material is in `docs/REAL_SIM_RESULTS.md`.
-- Literature scan for further riffs (four parallel agents, 2026-11-26): in progress; results to be added to
-  `docs/FOLLOWUP_RIFFS_PROPOSAL.md`.
+- Literature scan for further riffs (four parallel agents, 2026-11-26): done — ranked list in
+  `docs/FOLLOWUP_RIFFS_ROUND2.md`. Key finding: Linesight pauses the live game every step, so the Trackmania
+  interface gap exists only in real-time mode; plan Trackmania as a gap ladder.
 
 ## Where everything lives
 
