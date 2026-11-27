@@ -157,6 +157,8 @@ Below are **14 literature-grounded experimental riffs**, organized by the exact 
 
 ## Empirical Execution Status — All 14 Drone Riffs Completed (`Exp 11–18`, 2026-11-26!)
 
+> **Audit (2026-11-27):** the summaries below overstate several results (Exp 12, 14, 16B, 17, 18 especially). See *Audit of Exp 11–18* in `docs/REAL_SIM_RESULTS.md` before citing any of them.
+
 Every drone riff in `Steps 0–5` above has now been implemented and evaluated across 3 seeds (`mean ± std`) on `rl-tools/l2f` → `gym-pybullet-drones` CF2X (full tables in [REAL_SIM_RESULTS.md](../docs/REAL_SIM_RESULTS.md)):
 
 1. ✅ **[exp11_caps_smoothness.py](../real_sim/exp11_caps_smoothness.py) (`R1.1` CAPS + L2C2 Smoothness):** `3/3` seeds learn in one stage (`0%` crashes across 10 conditions), `44×` lower `‖Δa‖`, and `0.079 ± 0.026 m` target error (`2.3×` better than two-stage warm-start `Exp 7c`).

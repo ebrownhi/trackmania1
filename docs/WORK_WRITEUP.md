@@ -35,6 +35,7 @@ Seven rounds of work landed over three days; Rounds 3–4 (Exp 10–18) were don
 
 | Date | Round | What | Commit |
 | --- | --- | --- | --- |
+| 2026-11-27 | Audit 2 + Exp 30 | Audited Exp 11–18; final method matrix (5 seeds × 30 episodes, one protocol) | see git log |
 | 2026-11-27 | Round 7 (Exp 25–29) | Five parallel sub-studies: predictivity, gap attribution, hover-normalized DR, student RL fine-tuning, applied-action readback | see git log |
 | 2026-11-26 | Literature scan | Four agents; ranked ideas in `docs/FOLLOWUP_RIFFS_ROUND2.md` | `4d9111c` |
 | 2026-11-26 | Round 6 (Exp 22–24) | Three parallel sub-studies: privileged critic, student full-course completion, DR budget sweep | `fe947fd` |
@@ -56,6 +57,7 @@ The claim was mostly right but overstated; every gap it hid is now fixed or mark
 - **Two proposal ablations were missing:** individual randomization factors and the privileged critic. Done in Exp 19, 20, 22.
 - **Exp 15 overclaimed:** "0.000 ms RMSE" was a hit on a 4×4 grid that contains the truth; a Gaussian random walk does as
   well as Fisher-optimal excitation; every strategy leaves the 0.5 m safety sphere in the target at ≥ 1 s. Corrected in the docs.
+- **Exp 11–18, second audit (2026-11-27):** all numbers match their JSON, but six of seven headline claims go further than the data. Not supported: chunking's packet-loss tolerance (Exp 12: loss barely hurts the baseline), residual RL over a classical controller (Exp 16B: worse than the controller alone), the 2-round bootstrap (Exp 18: same completion as 1-round), and MOPO over k-NN (Exp 14: one seed). Omitted from the write-ups: nominal PPO beats every DR arm in Exp 17, and CAPS doubles source hold error in Exp 11. Table in `REAL_SIM_RESULTS.md`, *Audit of Exp 11–18*.
 - **Housekeeping:** Rounds 3–4 were unpushed at the time (now pushed); doc links were absolute `file:///Users/...` paths
   (now relative); the GitHub repo is public, though described as private.
 

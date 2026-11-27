@@ -51,6 +51,8 @@
 9. [x] **Update docs:** updated `THEORY_AND_HYPOTHESES.md`, `EMPIRICAL_THEORY_VERIFICATION.md`, `REAL_SIM_RESULTS.md`, and `FOLLOWUP_RIFFS_PROPOSAL.md`.
 
 ### P3+ — Phase-2 Literature Riffs ✅ ALL DONE 2026-11-26 (`docs/FOLLOWUP_RIFFS_PROPOSAL.md`, `Exp 11–18`)
+
+> **Audit (2026-11-27):** the summaries below overstate several results (Exp 12, 14, 16B, 17, 18 especially). See *Audit of Exp 11–18* in `docs/REAL_SIM_RESULTS.md` before citing any of them.
 - [x] **`Exp 11` (`R1.1` CAPS + L2C2 smoothness):** Eliminated `Exp 7b` 2/3-seed stall (`3/3` learned from scratch, `0%` crashes, `44×` smoother, `0.079 m` target error beating two-stage warm-start `0.182 m`).
 - [x] **`Exp 12` (`R2.3 + R3.1/R3.3` DIDA Chunk-4 + Track-Free RMA):** `0.975 ± 0.030` gates at `80%` command-packet drop; uncovered & fixed gate-coordinate shortcut trap (`4.33 → 1.31 m/s` velocity RMSE on `ellipse3d`).
 - [x] **`Exp 13` (`R3.2` Neural-Fly Live 100 Hz Composite RLS):** `1.000 ± 0.000` (`18/18` gates, zero target pre-calibration) in `0.5g` crosswind (`−67%` RMSE) and mid-race `-25%` motor loss (`−45%` vs PID), plus algebraic-loop ablation.
