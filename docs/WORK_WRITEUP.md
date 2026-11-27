@@ -14,12 +14,12 @@ the held-out 3D course (`ellipse3d`) unless noted, 3 seeds.
 
 | Hypothesis (drone part) | Verdict | Key number | Experiments |
 | --- | --- | --- | --- |
-| H1: nominal PPO degrades sharply on the drone | Partly | Zero-shot PPO passes all gates in the target but completes cleanly only 0.40 of the time | Exp 1, 10 |
+| H1: nominal PPO degrades sharply on the drone | Partly | Zero-shot PPO passes all gates in the target but completes cleanly only 0.49 (nominal) / 0.37 (perturbed) of the time vs 0.65 in the source | Exp 1, 10, 30 |
 | H1: where the drone gap comes from | Mostly motor lag | L2F's 55/249 ms motor model: 56% of prediction error, ~170% of the closed-loop gap; matching physics removes the training-course gap (0.036 → 0.036 m); 2-tick delay adds nothing | Exp 26 |
 | H2: dynamics randomization helps the drone | No gain, no harm | Matches no-DR at 1.1M+ steps (1.00 / 1.00); 33% slower laps; better on held-out L2F (0.96 vs 0.34 gates). Hover-normalized thrust removes most of the skill tax at 550k (held-out L2F 0.68 → 0.97) | Exp 4b, 9, 10, 19, 24, 27 |
-| H2: latency randomization helps | Yes | Best variant at equal budget (1.00 gates, 0.67 clean vs 0.40) | Exp 4b, 19 |
-| H3: recurrent students improve sensor-limited transfer | Yes, after a fix | Students complete the held-out course in the target at every sensor level (nominal 1.00 / 0.93 / 0.53); source RL fine-tuning does not help (worse in 11/24 target pairs) | Exp 10, 21, 23, 28 |
-| H4: residual fine-tuning beats randomization | Yes | 1.00 clean completion in both targets vs 0.00 for DR at 550k | Exp 9, 10, 14, 18 |
+| H2: latency randomization helps | Yes | Best method without target data (Exp 30: 0.80 clean vs 0.49 nominal in the target; 1.00 in the source) | Exp 4b, 19, 30 |
+| H3: recurrent students improve sensor-limited transfer | Yes, after a fix | Students complete the held-out course in the target at every sensor level (Exp 30, 5 seeds: nominal 0.89 / 0.65 / 0.70; Exp 23 had 1.00 / 0.93 / 0.53); source RL fine-tuning does not help (worse in 11/24 target pairs) | Exp 10, 21, 23, 28, 30 |
+| H4: residual fine-tuning beats randomization | Yes | Exp 30: 1.00 clean in the nominal target on both courses; 0.60 in the held-out perturbed target; full DR 0.00 at 550k | Exp 9, 10, 14, 18, 30 |
 | Ablation: privileged critic | Helps learning, not transfer | Wins 64/66 seed × cell pairs | Exp 20, 22 |
 | Ablation: recurrence | Helps | GRU beats feed-forward in every target cell (by 0.32–0.48 gates) | Exp 21 |
 | Ablation: individual DR factors | Harm is cumulative | Removing any one factor only partly recovers | Exp 19 |
@@ -109,7 +109,7 @@ Nothing open blocks the report on the drone side; Trackmania and the report itse
 
 All code, results and docs are in https://github.com/ebrownhi/trackmania1 (currently public).
 
-- Results and verdicts: `docs/REAL_SIM_RESULTS.md` (Rounds 1–6); plan: `docs/PLAN_OF_ACTION.md`.
+- Results and verdicts: `docs/REAL_SIM_RESULTS.md` (Rounds 1–8; Exp 30 is the report table); plan: `docs/PLAN_OF_ACTION.md`.
 - New scripts: `real_sim/exp19_dr_factor_ablation.py` … `exp29_applied_action_readback.py`; libraries `asym_policy.py`,
   `kin_observer.py`, `student_plus.py`, `trackfree_env.py`, `hover_norm.py`, `student_ft.py`, `applied_readback.py`.
 - Tests: `cd code && pixi run test` (31 pass). Simulators: `pixi run setup-sims`.

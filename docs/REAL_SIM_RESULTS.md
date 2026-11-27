@@ -15,10 +15,10 @@ Run any experiment with `../code/.pixi/envs/default/bin/python real_sim/<script>
 | Relay limit-cycle period `4(d+1)` | Exp 2 | ⚠️ **Corrected:** measured and exact discrete model give **4d+2 ticks** |
 | Lemma 1.1 ZOH vs zero-mask dropout | Exp 3 | ✅ ZOH: 100% gates up to p=0.5; zero-mask crashes every seed at p ≥ 0.2; staleness = d_o + p/(1-p) |
 | Thm 2.2 action buffer (H2 guardrail) | Exp 4, 4b | ✅ buffer16 survives d=8–12 where a_{t-1} crashes; randomized-latency buffer: 0 crashes in target at all d |
-| H2' dynamics DR helps | Exp 4b, 9, 10, 19, 24, 27 | ⚠️ **no transfer gain, no transfer harm:** the Exp 10/19 penalty is under-training at 550k (Exp 24: full DR matches no-DR at ≥1.1M; ceiling effect). **Hover-normalized thrust removes most of that skill tax at 550k** (Exp 27: full-DR held-out L2F `0.68 → 0.97`). Thrust-only DR + latency keeps `1.00` training-course skill and recovers ~2/3 of the 33% lap-time cost, but no DR arm beats no-DR's target clean completion at 550k. Latency-only DR remains best at equal budget |
+| H2' dynamics DR helps | Exp 4b, 9, 10, 19, 24, 27 | ⚠️ **no transfer gain, no transfer harm:** the Exp 10/19 penalty is under-training at 550k (Exp 24: full DR matches no-DR at ≥1.1M; ceiling effect). **Hover-normalized thrust removes most of that skill tax at 550k** (Exp 27: full-DR held-out L2F `0.68 → 0.97`). Thrust-only DR + latency keeps `1.00` training-course skill and recovers ~2/3 of the 33% lap-time cost, but no DR arm beats no-DR's target clean completion at 550k. Latency-only DR remains best at equal budget; **Exp 30 (5 seeds × 30 eps):** latency-only DR is the best target-agnostic method (held-out `target_nominal` clean `0.80` vs `0.49` nominal; source `1.00`); full DR `0.00` at 550k; hover-normalized thrust DR does not replicate as a winner |
 | H1' smoothness penalty (PPO) | Exp 7, 7b, 7c | ⚠️ partial: penalty alone (Exp 7) ❌; with buffer + latency DR, λ=0 learns bang-bang control whose target error is 4.5× its source error; λ=0.3 warm-start halves chattering and lowers target error at every d (0.26→0.18 m at d=0, 0.50→0.27 m at d=1); λ=0.3 from scratch fails to learn on 2/3 seeds |
 | Thm 2.4 recurrent-observer OOD | Exp 5, 5b | ⚠️ partial: with a 2.3× larger gap, fixed-dynamics estimators degrade (GRU 0.21, FF 0.23 m/s) and randomized ones hold (0.14, 0.15 m/s); 'GRU_fixed worse than FF' not observed |
-| H3' recurrent students + randomized distillation | Exp 5, 5b, 10, 21, 23, 28 | ✅ supported (Exp 21) and now reaching **full-course completion** (Exp 23). With a 3-flight PnP-bias GP, the track-free GRU student completes held-out `ellipse3d` in the PyBullet target at every sensor level (nominal `1.00 / 0.93 / 0.53`, perturbed `0.77 / 0.60 / 0.60` at clean / mid / hard, vs `0` before). Multi-track estimator training lifts L2F-source completion `0.33 → 0.60` (clean). Open: collision-free completion `≤ 0.50`; the source at hard stays at `0` (teacher ceiling); **Exp 28:** RL fine-tuning the student in randomized L2F raises source skill but lowers target clean completion in 11/24 pairs, so source RL does not close it |
+| H3' recurrent students + randomized distillation | Exp 5, 5b, 10, 21, 23, 28 | ✅ supported (Exp 21) and now reaching **full-course completion** (Exp 23). With a 3-flight PnP-bias GP, the track-free GRU student completes held-out `ellipse3d` in the PyBullet target at every sensor level (nominal `1.00 / 0.93 / 0.53`, perturbed `0.77 / 0.60 / 0.60` at clean / mid / hard, vs `0` before). Multi-track estimator training lifts L2F-source completion `0.33 → 0.60` (clean). Open: collision-free completion `≤ 0.50`; the source at hard stays at `0` (teacher ceiling); **Exp 28:** RL fine-tuning the student in randomized L2F raises source skill but lowers target clean completion in 11/24 pairs, so source RL does not close it; **Exp 30 (5 seeds):** GP-only student held-out target completion `0.89 / 0.65 / 0.70` (nominal) and `0.73 / 0.61 / 0.62` (perturbed) at clean / mid / hard, `0` crashes; Exp 23's `1.00 / 0.93 / 0.53` is at the optimistic end of these ranges |
 | Privileged critic (proposal ablation) | Exp 20, 22 | ✅ with a track-free-capable actor (Exp 22): asym critic > masked critic in `64/66` seed × cell pairs. Asym learns the training course (`0.98–1.00` gates) at every sensor level; sym never exceeds `0.45`. Held-out targets `0.30–0.51` vs `0.07–0.08`. It fixes learnability, not transfer (Exp 21 students transfer better) |
 | H1 gap attribution (drone) | Exp 26 | ✅ the drone gap is mostly the actuator model: L2F's 55/249 ms motor lag accounts for 56% of 0.5 s prediction error and 77% of attitude error (exact Shapley; then drag 19%, mass 16%), and ~170% of the closed-loop gap. Matching all six physical factors removes 85% of prediction error and the training-course transfer gap (`0.036 → 0.036 m`). The target's 2-tick delay adds nothing |
 | Sim→target predictivity | Exp 25 | ✅ training course: L2F ranking predicts PyBullet ranking (Spearman 0.84–0.88). ❌ held-out course: none for exact-state PPO (≈0.04), because held-out L2F is the harder, differently saturating environment. Target-side corrections break predictivity by construction |
@@ -27,7 +27,7 @@ Run any experiment with `../code/.pixi/envs/default/bin/python real_sim/<script>
 | Thm 2.5 phantom residual / delay alignment | Exp 6 | ✅ Δf≡0 control: d̂=3 exact, naive 0.12 vs aligned 0.007 m/s² (17×) |
 | Guardrail #5 + Nuance #2 joint (d̂, τ̂) SysID | Exp 6 | ✅ needed on PyBullet: delay-only scan fails (d̂=0); joint scan recovers d̂=3, τ̂=30 ms exactly |
 | Guardrail #6 body-frame vs world-frame k-NN | Exp 6, 8 | ✅ world-frame gives 0% held-out improvement; body-frame −60% residual RMSE |
-| H4' residual model closes gap | Exp 8, 9, 10, 14 | ✅ model fidelity (replay 0.48 → 0.064 m); ✅ hover FT closes +69% (nominal) and +32% (perturbed) vs DR −29…−65%; ✅ **6-gate 3D racing (`Exp 10, 14`)**: `residual_ft_ppo` & `swift_mopo_ft` hit **`1.000 ± 0.000` gate completion and `1.00` collision-free completion** on held-out `ellipse3d` (vs `0.33–0.43` clean for zero-shot nominal PPO and `0.00` for DR) |
+| H4' residual model closes gap | Exp 8, 9, 10, 14 | ✅ model fidelity (replay 0.48 → 0.064 m); ✅ hover FT closes +69% (nominal) and +32% (perturbed) vs DR −29…−65%; ✅ **6-gate 3D racing (`Exp 10, 14`)**: `residual_ft_ppo` & `swift_mopo_ft` hit **`1.000 ± 0.000` gate completion and `1.00` collision-free completion** on held-out `ellipse3d` (vs `0.33–0.43` clean for zero-shot nominal PPO and `0.00` for DR); **Exp 30 (5 seeds × 30 eps):** `1.00` clean in `target_nominal` on both courses; held-out `target_perturbed` `0.60 [0.20, 1.00]`, not `1.00` |
 | Prop 2.7 GP perception residual | Exp 9, 10 | ✅ biased sensor: GP recovers systematic bias and FT closes +56% of gap; zero-bias / i.i.d. noise null: GP mean collapses to **0.0008–0.003 m** (`Exp 9, 10`) when conditioned on ground-truth pose |
 | Riff R1.1: CAPS + L2C2 actor-loss smoothness | Exp 11 | ⚠️ (audit-corrected 2026-11-27) learns on `3/3` seeds with `0` crashes and lowers target hold error at every delay (`d=0`: `0.257 → 0.079 m`; `d=6`: `0.456 → 0.084 m`). The `44×` smoothing (`‖Δa‖ 1.091 → 0.025`) is in the **source**; in the target it is `4.7×` (`1.18 → 0.25`). It costs source precision: source hold error rises `0.043 → 0.111 m`. The Exp 7c comparison crosses experiments (different env and budget) |
 | Riff R2.3 + R3.1/R3.3: DIDA 4-step chunking & RMA | Exp 12 | ❌ (audit-corrected) **Part A:** command-packet loss barely hurts either policy (single-step `0.96 → 0.94` gates from 0% to 80% loss); chunk-4 is already better at 0% loss (`1.00` vs `0.96`), so its edge comes from training, not loss tolerance, and both complete cleanly `≤ 0.10` of the time. **Part B:** every observer fails (`60–100%` crashes, gate fraction `≤ 0.26`); the staleness-gated RMA observer is no better than the blind GRU (`0.18–0.24` vs `0.21–0.26`); its thrust-shift estimate barely separates nominal from perturbed (`0.47–0.63` vs `0.59–0.71`) and has no source value; the `4.33 m/s` sign-inversion number is in neither the script nor the JSON. (The shortcut itself was later confirmed by Exp 21.) |
@@ -527,6 +527,75 @@ The actor is the teacher MLP on the estimator-filled observation (deployable). T
 - **In the PyBullet target, or with latency randomization U{0..2}, the commanded history wins everywhere:** target d = 6 gives `1.00 / 1.00` vs readback `0.40–0.50 / 0.00`. `both` falls in between.
 - **Consistent with Thm 2.2:** the commanded buffer carries the in-flight actions a policy needs to predict under delay; the readback only says what is in effect now. Use the readback for model fitting, and the commanded history plus latency DR for the policy.
 - **Caveats:** every arm crashes in L2F at d ≥ 3 (known L2F delay fragility); 6 eval episodes per cell; the readback is idealized (an exact copy of the executed command).
+
+## Round 8 — Final method matrix (2026-11-27)
+
+### Exp 30 — Every main method under one protocol (5 seeds × 30 episodes)
+
+([exp30_final_matrix.py](../real_sim/exp30_final_matrix.py), table and figure from [exp30_table.py](../real_sim/exp30_table.py).)
+Exp 1–29 used different baselines, env seeds and episode counts, and at 3 seeds × 10 episodes clean completion is close to
+all-or-nothing per seed. Exp 30 reruns the methods the report compares under one protocol:
+- 5 seeds, 30 eval episodes per cell, Exp 19 env seeds;
+- 550k source steps for every source-trained arm (450k at `λ = 0.02` + 100k at `λ = 0.20`);
+- residual fine-tuning, the oracle and the students start from each seed's own 450k nominal checkpoint;
+- 95% CIs are a bootstrap over the 5 seed means.
+
+Exact-state arms are as in Exp 10/19/26/27. Students:
+- `student_<lvl>` is Exp 23's full stack (`F1 + F2 + F3`);
+- `student_f3_<lvl>` is Exp 23's best target variant (Exp 21 estimator + PnP-bias GP), here calibrated by its own flights.
+
+Each cell shows completion / clean completion [95% CI] / median lap s.
+
+**figure8** — completion / clean completion [95% CI] / median lap s
+
+| Method | source_l2f | target_nominal | target_perturbed |
+|---|---|---|---|
+| `nominal` | 1.00 / 1.00 [1.00, 1.00] / 4.61 | 1.00 / 0.60 [0.20, 1.00] / 5.03 | 0.81 / 0.71 [0.31, 1.00] / 4.71 |
+| `latency_dr` | 1.00 / 1.00 [1.00, 1.00] / 4.93 | 1.00 / 0.86 [0.58, 1.00] / 5.38 | 0.86 / 0.79 [0.39, 1.00] / 5.08 |
+| `full_dr` | 0.22 / 0.22 [0.00, 0.62] / 6.43 | 0.00 / 0.00 [0.00, 0.00] / 6.49 | 0.00 / 0.00 [0.00, 0.00] / 6.23 |
+| `hn_thrust_lat` | 1.00 / 0.85 [0.56, 1.00] / 5.19 | 0.80 / 0.53 [0.13, 0.93] / 5.73 | 1.00 / 0.85 [0.54, 1.00] / 5.50 |
+| `motor_sysid` | 0.02 / 0.02 [0.00, 0.06] / 4.48 | 1.00 / 1.00 [1.00, 1.00] / 4.85 | 1.00 / 0.89 [0.68, 1.00] / 4.75 |
+| `residual_ft` | 1.00 / 1.00 [1.00, 1.00] / 4.81 | 1.00 / 1.00 [1.00, 1.00] / 5.15 | 1.00 / 1.00 [1.00, 1.00] / 5.01 |
+| `oracle` | 0.96 / 0.92 [0.76, 1.00] / 4.45 | 1.00 / 1.00 [1.00, 1.00] / 4.83 | 1.00 / 1.00 [1.00, 1.00] / 4.73 |
+| `classical_expert` | 1.00 / 1.00 [1.00, 1.00] / 4.37 | 1.00 / 1.00 [1.00, 1.00] / 4.40 | 0.00 / 0.00 [0.00, 0.00] / — |
+| `student_f3_clean` | 1.00 / 0.94 [0.82, 1.00] / 4.87 | 0.99 / 0.57 [0.32, 0.81] / 5.37 | 0.63 / 0.13 [0.03, 0.25] / 5.04 |
+| `student_f3_mid` | 0.51 / 0.35 [0.09, 0.61] / 5.13 | 0.97 / 0.62 [0.33, 0.87] / 5.49 | 0.72 / 0.31 [0.10, 0.53] / 5.31 |
+| `student_f3_hard` | 0.00 / 0.00 [0.00, 0.00] / 5.34 | 0.77 / 0.50 [0.18, 0.81] / 5.76 | 0.61 / 0.23 [0.03, 0.45] / 5.25 |
+| `student_clean` | 0.97 / 0.97 [0.91, 1.00] / 4.93 | 0.95 / 0.65 [0.31, 0.89] / 5.52 | 0.64 / 0.19 [0.02, 0.43] / 5.05 |
+| `student_mid` | 0.67 / 0.40 [0.25, 0.59] / 5.07 | 0.93 / 0.29 [0.03, 0.54] / 5.35 | 0.57 / 0.30 [0.03, 0.63] / 5.04 |
+| `student_hard` | 0.00 / 0.00 [0.00, 0.00] / 5.33 | 0.52 / 0.22 [0.03, 0.47] / 5.54 | 0.33 / 0.07 [0.01, 0.15] / 5.07 |
+
+**ellipse3d** — completion / clean completion [95% CI] / median lap s
+
+| Method | source_l2f | target_nominal | target_perturbed |
+|---|---|---|---|
+| `nominal` | 0.72 / 0.65 [0.26, 0.99] / 4.95 | 1.00 / 0.49 [0.10, 0.87] / 5.16 | 1.00 / 0.37 [0.15, 0.68] / 4.98 |
+| `latency_dr` | 1.00 / 1.00 [1.00, 1.00] / 5.41 | 1.00 / 0.80 [0.40, 1.00] / 5.53 | 0.71 / 0.40 [0.00, 0.80] / 5.35 |
+| `full_dr` | 0.20 / 0.19 [0.00, 0.58] / 6.54 | 0.00 / 0.00 [0.00, 0.00] / 6.92 | 0.00 / 0.00 [0.00, 0.00] / 6.83 |
+| `hn_thrust_lat` | 0.40 / 0.40 [0.00, 0.80] / 5.60 | 0.40 / 0.00 [0.00, 0.00] / 5.91 | 0.58 / 0.58 [0.18, 0.98] / 5.63 |
+| `motor_sysid` | 0.00 / 0.00 [0.00, 0.00] / — | 0.99 / 0.80 [0.40, 1.00] / 4.99 | 0.80 / 0.20 [0.00, 0.60] / 4.82 |
+| `residual_ft` | 0.88 / 0.82 [0.51, 1.00] / 5.08 | 1.00 / 1.00 [1.00, 1.00] / 5.22 | 1.00 / 0.60 [0.20, 1.00] / 5.09 |
+| `oracle` | 0.21 / 0.20 [0.00, 0.60] / 5.06 | 1.00 / 1.00 [1.00, 1.00] / 4.88 | 1.00 / 1.00 [1.00, 1.00] / 4.74 |
+| `classical_expert` | 0.00 / 0.00 [0.00, 0.00] / — | 1.00 / 1.00 [1.00, 1.00] / 4.52 | 0.30 / 0.00 [0.00, 0.00] / 4.19 |
+| `student_f3_clean` | 0.21 / 0.20 [0.00, 0.60] / 5.96 | 0.89 / 0.44 [0.08, 0.81] / 5.35 | 0.73 / 0.29 [0.11, 0.45] / 5.30 |
+| `student_f3_mid` | 0.17 / 0.11 [0.00, 0.34] / 5.62 | 0.65 / 0.37 [0.11, 0.64] / 5.46 | 0.61 / 0.25 [0.05, 0.53] / 5.27 |
+| `student_f3_hard` | 0.00 / 0.00 [0.00, 0.00] / — | 0.70 / 0.39 [0.06, 0.71] / 5.75 | 0.62 / 0.13 [0.03, 0.25] / 5.47 |
+| `student_clean` | 0.57 / 0.31 [0.00, 0.71] / 5.81 | 0.82 / 0.35 [0.13, 0.63] / 5.48 | 0.65 / 0.13 [0.01, 0.27] / 5.22 |
+| `student_mid` | 0.39 / 0.22 [0.00, 0.62] / 5.69 | 0.68 / 0.13 [0.01, 0.24] / 5.47 | 0.48 / 0.17 [0.00, 0.37] / 5.51 |
+| `student_hard` | 0.04 / 0.00 [0.00, 0.00] / 6.22 | 0.17 / 0.00 [0.00, 0.00] / 6.09 | 0.19 / 0.01 [0.00, 0.02] / 5.46 |
+
+![Exp 30](../results/real_sim/exp30_final_matrix.png)
+
+**What holds at 5 seeds × 30 episodes** (held-out `ellipse3d` unless noted):
+- **H4 residual fine-tuning:** the only source-trained method with `1.00 [1.00, 1.00]` clean completion in `target_nominal` on both courses, and in `target_perturbed` on the training course. In held-out `target_perturbed` it drops to `0.60 [0.20, 1.00]` (2/5 seeds fail), so Exp 10's `1.00` there was optimistic. It keeps source skill (`0.82` clean).
+- **H2 latency randomization:** the best method that uses no target data. It completes cleanly in the source on every seed (`1.00`) and reaches `0.80 [0.40, 1.00]` clean in `target_nominal`, vs `0.49 [0.10, 0.87]` for nominal PPO. In `target_perturbed` it ties nominal (`0.40` vs `0.37`).
+- **H2 full dynamics DR at 550k:** `0.00` clean completion in every target cell (reproduces Exp 10/19; Exp 24 shows this is under-training).
+- **Hover-normalized thrust DR (Exp 27):** does not replicate as a winner. It is between nominal and full DR, with `0.00` clean in held-out `target_nominal`.
+- **Motor-lag SysID source (Exp 26):** `1.00` clean on the training course in `target_nominal` and `0.80` held out, so matching only the motor model recovers most of the transfer gap without target rollouts. It cannot fly L2F itself (crashes), as expected.
+- **H1 zero-shot gap:** nominal PPO completes every target episode (`1.00`), but clean completion is `0.49` (nominal) and `0.37` (perturbed) vs `0.65` in the source; the gap is in collisions, not gates.
+- **H3 students:** completion in the targets is `0.62–0.89` (GP-only) and `0.17–0.82` (full stack), with no crashes; clean completion stays `≤ 0.44`. GP-only beats the full stack in held-out targets at every sensor level, as in Exp 23, but by less: GP-only held-out `target_nominal` completion is `0.89 / 0.65 / 0.70` (clean / mid / hard) vs Exp 23's `1.00 / 0.93 / 0.53`. Exp 23's numbers are within these 5-seed ranges but at the optimistic end. The full stack reproduces Exp 23's `v3` closely (`0.82 / 0.68 / 0.17` vs `1.00 / 0.70 / 0.13`).
+- **Classical controller:** perfect in `target_nominal`, `0.00` clean in `target_perturbed` (fixed gains, kf × 1.20), and crashes in held-out L2F.
+- **Oracle:** `1.00` clean in both targets, as expected; it loses the source (`0.20`).
 
 ## Setup & reproducibility notes
 - Reproducible environment & build scripts are captured in [code/pixi.toml](../code/pixi.toml) and [code/setup_sims.sh](../code/setup_sims.sh); run `pixi run --manifest-path code/pixi.toml test` (`17/17` tests passing in ~5 s).

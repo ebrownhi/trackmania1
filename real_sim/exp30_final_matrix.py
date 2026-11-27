@@ -18,6 +18,8 @@ Stage 2 (start from this seed's 450k nominal checkpoint):
     oracle          100k FT directly in the target, one per target                    (upper reference)
     student_<lvl>   sensor-limited track-free GRU student on the frozen 450k teacher: multi-track estimator,
                     delay compensation, 3-flight PnP-bias GP per target               (Exp 23 v3_f1f2f3)
+    student_f3_<lvl> Exp 21 estimator recipe (figure8 only, no delay compensation) + the same GP; Exp 23's best
+                    target variant (v4_f3only), here calibrated by its own flights
 Plus classical_expert (no training). Source-cell evaluation of per-target arms uses the target_nominal policy.
 
 Eval: figure8 (training) + held-out ellipse3d x source_l2f (d=0) / target_nominal (PyBullet, d=2) /
@@ -49,7 +51,7 @@ STAGE1 = {  # arm: (hover-normalized?, randomized dynamics factors, latency DR?,
     "motor_sysid": (False, [], False, ("motor",)),
 }
 LEVELS = {"clean": (0, 0.0), "mid": (1, 0.1), "hard": (2, 0.2)}
-STAGE2 = ["residual_ft", "oracle"] + [f"student_{lv}" for lv in LEVELS]
+STAGE2 = ["residual_ft", "oracle"] + [f"student_{lv}" for lv in LEVELS] + [f"student_f3_{lv}" for lv in LEVELS]
 CAL = {"target_nominal": (1.0, 2), "target_perturbed": (1.20, 3)}  # per-target arms: (kf scale, action delay)
 METRICS = ["gate_frac", "completion", "clean_completion", "crash_rate", "median_lap_s", "track_err_m"]
 
@@ -163,10 +165,12 @@ def stage2_job(args):
         return arm, seed, _cached(arm, seed, lambda: run_per_target(residual_venv))
     if arm == "oracle":
         return arm, seed, _cached(arm, seed, lambda: run_per_target(oracle_venv))
-    return arm, seed, _cached(arm, seed, lambda: _student(arm[len("student_"):], seed, n_eval, base_path))
+    f3 = arm.startswith("student_f3_")
+    level = arm.split("_")[-1]
+    return arm, seed, _cached(arm, seed, lambda: _student(level, seed, n_eval, base_path, f3_only=f3))
 
 
-def _student(level, seed, n_eval, base_path):
+def _student(level, seed, n_eval, base_path, f3_only=False):
     from stable_baselines3 import PPO
     from asym_policy import PrivStackRacingEnv
     from exp10_method_matrix import dyn_sampler
@@ -177,8 +181,10 @@ def _student(level, seed, n_eval, base_path):
 
     od, pd = LEVELS[level]
     teacher = PPO.load(base_path, device="cpu")
+    pool_kw = dict(eps=10) if f3_only else dict(eps=16, courses=track_pool())
     est = distill_kin(teacher, recurrent=True, obs_delay=od, p_drop=pd, seed=100 + seed, dyn_sampler=dyn_sampler,
-                      delays=TRAIN_DELAYS, iters=6, eps=16, courses=track_pool())
+                      delays=TRAIN_DELAYS, iters=6, **pool_kw)
+    dc = not f3_only
 
     def env(course, tname, s_off=0):
         dom, d, kf, pnp = S_TARGETS[tname]
@@ -187,9 +193,9 @@ def _student(level, seed, n_eval, base_path):
 
     gp, cal = {}, {}
     for tname in CAL:
-        gp[tname], cal[tname] = calibrate_bias(PlusStudent(est, teacher, od, delay_comp=True), env("figure8", tname, 50),
+        gp[tname], cal[tname] = calibrate_bias(PlusStudent(est, teacher, od, delay_comp=dc), env("figure8", tname, 50),
                                                n_flights=3, seed=seed)
-    ev = {c: {t: evaluate_racing(PlusStudent(est, teacher, od, delay_comp=True, gp_hook=gp.get(t)), env(c, t),
+    ev = {c: {t: evaluate_racing(PlusStudent(est, teacher, od, delay_comp=dc, gp_hook=gp.get(t)), env(c, t),
                                  n_eval=n_eval) for t in S_TARGETS} for c in COURSES}
     return {"ev": ev, "cal": cal}
 
