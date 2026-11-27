@@ -16,6 +16,17 @@ In that mode inference latency costs no game time. So the "interface gap" behind
 in real time, as tmrl/rtgym does; otherwise the remaining gap is rendered observations plus state-readout mismatch.
 This suggests running Trackmania as a **gap ladder** (idea T1 below) instead of a single live-game evaluation.
 
+## Status after Round 7 (2026-11-27)
+
+Tier-1 ideas 1–5 were tested as Exp 25–29 (`REAL_SIM_RESULTS.md`, Round 7):
+- **1 → Exp 25:** predictive on the training course (Spearman 0.84–0.88), not held out (≈0.04).
+- **2 → Exp 26:** motor lag is the decisive factor (56% of prediction error, ~170% of the closed-loop gap); matching physics removes the training-course gap.
+- **3 → Exp 27:** hover normalization removes most of the DR skill tax at 550k; large batches hurt.
+- **4 → Exp 28:** negative; source RL fine-tuning hurts transfer.
+- **5 → Exp 29:** the readback fixes the phantom residual, but is not a better policy input.
+
+Ideas 6–16 and T1–T7 are untested.
+
 ## Tier 1 — small effort, reuses existing pipelines (drone side)
 
 | # | Idea | Source | Experiment in our setup | Bears on |

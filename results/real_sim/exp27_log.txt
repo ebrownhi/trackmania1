@@ -1,0 +1,20 @@
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+Exp 27: 12 runs in 5872s
+
+[figure8] gate_frac | clean | crash | median lap  (mean ± std, 3 seeds)
+  none           source_l2f: 1.000 ± 0.000 | 1.00 | 0.00 | 4.57s || target_nominal: 1.000 ± 0.000 | 0.67 | 0.00 | 4.93s || target_perturbed: 1.000 ± 0.000 | 1.00 | 0.00 | 4.56s
+  full           source_l2f: 0.778 ± 0.104 | 0.00 | 0.00 | 6.19s || target_nominal: 0.719 ± 0.175 | 0.00 | 0.00 | 6.68s || target_perturbed: 0.722 ± 0.219 | 0.00 | 0.00 | 6.49s
+  hn_none        source_l2f: 1.000 ± 0.000 | 1.00 | 0.00 | 4.35s || target_nominal: 1.000 ± 0.000 | 1.00 | 0.00 | 4.78s || target_perturbed: 1.000 ± 0.000 | 1.00 | 0.00 | 4.57s
+  hn_thrust_lat  source_l2f: 1.000 ± 0.000 | 0.73 | 0.00 | 5.11s || target_nominal: 0.897 ± 0.145 | 0.50 | 0.00 | 5.67s || target_perturbed: 1.000 ± 0.000 | 0.87 | 0.00 | 5.36s
+  hn_full        source_l2f: 0.972 ± 0.039 | 0.67 | 0.00 | 6.06s || target_nominal: 0.889 ± 0.039 | 0.00 | 0.00 | 6.30s || target_perturbed: 0.903 ± 0.052 | 0.00 | 0.00 | 6.13s
+  full_bigbatch  source_l2f: 0.311 ± 0.240 | 0.00 | 0.27 | nans || target_nominal: 0.236 ± 0.020 | 0.00 | 0.00 | nans || target_perturbed: 0.131 ± 0.028 | 0.00 | 0.53 | nans
+
+[ellipse3d] gate_frac | clean | crash | median lap  (mean ± std, 3 seeds)
+  none           source_l2f: 0.797 ± 0.230 | 0.37 | 0.27 | 4.79s || target_nominal: 1.000 ± 0.000 | 0.40 | 0.00 | 5.02s || target_perturbed: 1.000 ± 0.000 | 0.40 | 0.00 | 4.91s
+  full           source_l2f: 0.675 ± 0.301 | 0.33 | 0.00 | 6.99s || target_nominal: 0.750 ± 0.136 | 0.00 | 0.00 | 7.12s || target_perturbed: 0.667 ± 0.245 | 0.00 | 0.00 | 6.95s
+  hn_none        source_l2f: 0.358 ± 0.065 | 0.00 | 0.97 | nans || target_nominal: 1.000 ± 0.000 | 0.63 | 0.00 | 5.03s || target_perturbed: 1.000 ± 0.000 | 0.87 | 0.00 | 4.73s
+  hn_thrust_lat  source_l2f: 0.856 ± 0.204 | 0.67 | 0.00 | 5.57s || target_nominal: 0.897 ± 0.145 | 0.00 | 0.00 | 5.89s || target_perturbed: 0.961 ± 0.055 | 0.67 | 0.00 | 5.57s
+  hn_full        source_l2f: 0.972 ± 0.039 | 0.00 | 0.00 | 6.09s || target_nominal: 0.861 ± 0.039 | 0.00 | 0.00 | 6.29s || target_perturbed: 0.919 ± 0.004 | 0.00 | 0.00 | 6.33s
+  full_bigbatch  source_l2f: 0.108 ± 0.035 | 0.00 | 0.67 | nans || target_nominal: 0.083 ± 0.000 | 0.00 | 0.67 | nans || target_perturbed: 0.008 ± 0.000 | 0.00 | 1.00 | nans

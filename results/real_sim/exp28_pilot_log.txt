@@ -1,0 +1,10 @@
+pybullet build time: Nov 21 2026 21:18:51
+Exp 28: 1 jobs (150000 FT steps) in 2993s
+
+[figure8] completion | clean_completion | gate_frac | crash  (mean over seeds)
+  mid   student    source_l2f: 0.90 | 0.80 | 0.99 | 0.00 || target_nominal: 1.00 | 0.90 | 1.00 | 0.00 || target_perturbed: 1.00 | 0.60 | 1.00 | 0.00
+  mid   student_ft source_l2f: 1.00 | 1.00 | 1.00 | 0.00 || target_nominal: 1.00 | 0.20 | 1.00 | 0.00 || target_perturbed: 1.00 | 0.40 | 1.00 | 0.00
+
+[ellipse3d] completion | clean_completion | gate_frac | crash  (mean over seeds)
+  mid   student    source_l2f: 0.00 | 0.00 | 0.26 | 1.00 || target_nominal: 1.00 | 0.80 | 1.00 | 0.00 || target_perturbed: 1.00 | 0.90 | 1.00 | 0.00
+  mid   student_ft source_l2f: 0.00 | 0.00 | 0.18 | 1.00 || target_nominal: 1.00 | 0.90 | 1.00 | 0.00 || target_perturbed: 1.00 | 0.50 | 1.00 | 0.00

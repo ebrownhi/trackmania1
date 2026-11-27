@@ -1,0 +1,18 @@
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+Exp 29 B: 12 jobs in 1886s
+
+|r_hat_lin| [m/s^2] | replay err @1 s with residual / without [m]   (mean ± std)
+  l2f_d3     naive       0.108 ± 0.001 |    0.450 ± 0.033 /    0.436 ± 0.032   picks (d, tau): [(0, 'l2f_native'), (0, 'l2f_native'), (0, 'l2f_native')]
+  l2f_d3     scan        0.006 ± 0.001 |    0.081 ± 0.010 /    0.068 ± 0.006   picks (d, tau): [(3, 'l2f_native'), (3, 'l2f_native'), (3, 'l2f_native')]
+  l2f_d3     applied     0.006 ± 0.001 |    0.081 ± 0.010 /    0.068 ± 0.006   picks (d, tau): [(0, 'l2f_native'), (0, 'l2f_native'), (0, 'l2f_native')]
+  l2f_jit14  naive       0.108 ± 0.006 |    0.717 ± 0.085 /    0.660 ± 0.068   picks (d, tau): [(0, 'l2f_native'), (0, 'l2f_native'), (0, 'l2f_native')]
+  l2f_jit14  scan        0.071 ± 0.004 |    0.574 ± 0.083 /    0.516 ± 0.056   picks (d, tau): [(2, 'l2f_native'), (2, 'l2f_native'), (2, 'l2f_native')]
+  l2f_jit14  applied     0.008 ± 0.001 |    0.105 ± 0.012 /    0.069 ± 0.012   picks (d, tau): [(0, 'l2f_native'), (0, 'l2f_native'), (0, 'l2f_native')]
+  pyb_d3     naive       1.376 ± 0.016 |    0.293 ± 0.020 /    0.793 ± 0.013   picks (d, tau): [(0, 'tau50ms'), (0, 'tau50ms'), (0, 'tau50ms')]
+  pyb_d3     scan        1.376 ± 0.018 |    0.165 ± 0.014 /    0.751 ± 0.019   picks (d, tau): [(3, 'tau30ms'), (3, 'tau30ms'), (3, 'tau30ms')]
+  pyb_d3     applied     1.376 ± 0.018 |    0.165 ± 0.014 /    0.751 ± 0.019   picks (d, tau): [(0, 'tau30ms'), (0, 'tau30ms'), (0, 'tau30ms')]
+  pyb_jit14  naive       1.458 ± 0.025 |    0.474 ± 0.046 /    0.868 ± 0.026   picks (d, tau): [(0, 'tau50ms'), (0, 'tau50ms'), (0, 'tau50ms')]
+  pyb_jit14  scan        1.434 ± 0.025 |    0.447 ± 0.038 /    0.835 ± 0.023   picks (d, tau): [(2, 'tau30ms'), (2, 'tau30ms'), (2, 'tau30ms')]
+  pyb_jit14  applied     1.386 ± 0.025 |    0.210 ± 0.033 /    0.761 ± 0.020   picks (d, tau): [(0, 'tau30ms'), (0, 'tau30ms'), (0, 'tau30ms')]

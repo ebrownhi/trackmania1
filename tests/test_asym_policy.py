@@ -133,3 +133,37 @@ def test_kinstack_env_layout():
     assert np.allclose(kin[1], prev_newest)  # newest-first stack shifts by one frame per step
     st = env.drone.true_state()
     assert np.allclose(o[-N_PRIV:][15:18], 0.33 * (st.R.T @ st.v), atol=1e-5)
+
+
+def test_student_ft_init_reproduces_student():
+    """Exp 28: a teacher-initialized fine-tuning policy in StudentFTEnv acts exactly like the un-fine-tuned student."""
+    from stable_baselines3 import PPO as _PPO
+    from asym_policy import AsymActorCriticPolicy, PrivStackRacingEnv
+    from kin_observer import KinGRU
+    from student_ft import TEACHER_DIM, CaptureTeacher, StudentFTEnv, init_from_teacher
+    from student_plus import PlusStudent
+
+    import gymnasium as gym
+
+    class _E(gym.Env):  # a random teacher with the real teacher's 56-dim exact-input interface
+        observation_space = gym.spaces.Box(-np.inf, np.inf, (TEACHER_DIM,), np.float32)
+        action_space = gym.spaces.Box(-1.0, 1.0, (4,), np.float32)
+    teacher = _PPO("MlpPolicy", _E(), seed=1, device="cpu", policy_kwargs=dict(net_arch=[128, 128]))
+    th.manual_seed(0)
+    est = KinGRU()
+    kw = dict(obs_delay=1, p_drop=0.1, random_start_gate=False, seed=3)
+    base_env = PrivStackRacingEnv("figure8", "source", 8, **kw)
+    ft_env = StudentFTEnv("figure8", "source", 8, student=PlusStudent(est, CaptureTeacher(teacher), 1), **kw)
+    model = _PPO(AsymActorCriticPolicy, ft_env, n_steps=64, batch_size=64, seed=0, device="cpu",
+                 policy_kwargs=dict(net_arch=[128, 128], n_priv=TEACHER_DIM, critic_privileged=True))
+    init_from_teacher(model, teacher)
+    pol = PlusStudent(est, teacher, 1)
+    o, _ = base_env.reset(seed=11)
+    pol.reset_episode()
+    x, _ = ft_env.reset(seed=11)
+    for _ in range(30):
+        a_ref = pol(o, base_env, 0)
+        a_ft, _ = model.predict(x, deterministic=True)
+        assert np.allclose(a_ref, a_ft, atol=1e-5)
+        o, *_ = base_env.step(a_ref)
+        x, *_ = ft_env.step(a_ft)

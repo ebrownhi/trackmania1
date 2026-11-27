@@ -1,0 +1,16 @@
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+Exp 28: 6 jobs (150000 FT steps) in 2185s
+
+[figure8] completion | clean_completion | gate_frac | crash  (mean over seeds)
+  mid   student    source_l2f: 0.70 | 0.50 | 0.94 | 0.03 || target_nominal: 1.00 | 0.73 | 1.00 | 0.00 || target_perturbed: 0.57 | 0.30 | 0.94 | 0.00
+  mid   student_ft source_l2f: 0.90 | 0.70 | 0.99 | 0.00 || target_nominal: 1.00 | 0.23 | 1.00 | 0.00 || target_perturbed: 0.60 | 0.13 | 0.95 | 0.00
+  hard  student    source_l2f: 0.00 | 0.00 | 0.09 | 1.00 || target_nominal: 0.67 | 0.50 | 0.96 | 0.00 || target_perturbed: 0.40 | 0.17 | 0.92 | 0.00
+  hard  student_ft source_l2f: 0.00 | 0.00 | 0.20 | 0.90 || target_nominal: 0.67 | 0.47 | 0.96 | 0.00 || target_perturbed: 0.47 | 0.13 | 0.92 | 0.00
+
+[ellipse3d] completion | clean_completion | gate_frac | crash  (mean over seeds)
+  mid   student    source_l2f: 0.27 | 0.20 | 0.51 | 0.67 || target_nominal: 0.80 | 0.43 | 0.97 | 0.00 || target_perturbed: 0.50 | 0.30 | 0.93 | 0.00
+  mid   student_ft source_l2f: 0.27 | 0.10 | 0.44 | 0.67 || target_nominal: 0.63 | 0.30 | 0.96 | 0.00 || target_perturbed: 0.50 | 0.20 | 0.94 | 0.00
+  hard  student    source_l2f: 0.00 | 0.00 | 0.18 | 1.00 || target_nominal: 0.70 | 0.30 | 0.97 | 0.00 || target_perturbed: 0.63 | 0.03 | 0.96 | 0.00
+  hard  student_ft source_l2f: 0.00 | 0.00 | 0.20 | 0.97 || target_nominal: 0.53 | 0.30 | 0.95 | 0.00 || target_perturbed: 0.43 | 0.03 | 0.94 | 0.00

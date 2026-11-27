@@ -71,6 +71,12 @@
   - **Exp 22 (privileged critic):** decisively helps with a track-free actor (`64/66` pairs).
   - **Exp 23 (full-course completion):** a PnP-bias GP gives completion in both targets at every sensor level; multi-track estimator training fixes the source at clean.
   - **Exp 24 (DR budget sweep):** the DR penalty is under-training; no transfer gain or harm at ≥1.1M; DR improves held-out L2F robustness.
+- [x] **Round 7 (2026-11-27, Exp 25–29, five parallel sub-studies):**
+  - **Exp 25:** predictivity holds on the training course only.
+  - **Exp 26:** the gap is mostly motor lag.
+  - **Exp 27:** hover-normalized thrust removes most of the DR skill tax.
+  - **Exp 28:** student RL fine-tuning in the source hurts transfer.
+  - **Exp 29:** the readback fixes the phantom residual but is not a better policy input.
 - [ ] **Residual drone items (non-blocking):** collision-free completion for students (`≤ 0.50`); the source at hard sensor (teacher ceiling under stale geometry); harder targets so DR arms can be ranked (ceiling effect at ≥1.1M).
 
 ### P4 — Housekeeping ✅ done 2026-11-25

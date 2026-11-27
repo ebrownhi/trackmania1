@@ -1,10 +1,10 @@
 # Drone Sim-to-Sim: Audit & Rounds 5–6 Write-up
 
-As of 2026-11-26. Also published as a Claude Doc: https://claude.ai/artifact/2wU1Kkw6ug4a9N2WvB26UE
+As of 2026-11-27. Also published as a Claude Doc: https://claude.ai/artifact/2wU1Kkw6ug4a9N2WvB26UE
 
 The drone branch (L2F source → PyBullet target) now has a documented result for every proposal hypothesis, ablation and
 baseline; Trackmania and the final report have not started. This write-up covers the work Claude did: setup and
-Rounds 1–2, an audit of the Rounds 3–4 claims, and the Round 5–6 fixes and new experiments. Full numbers live in
+Rounds 1–2, an audit of the Rounds 3–4 claims, the Round 5–6 fixes and new experiments, and Round 7's gap attribution (Exp 25–29). Full numbers live in
 `docs/REAL_SIM_RESULTS.md`; the task list is `docs/PLAN_OF_ACTION.md`.
 
 ## Where each hypothesis stands
@@ -15,23 +15,28 @@ the held-out 3D course (`ellipse3d`) unless noted, 3 seeds.
 | Hypothesis (drone part) | Verdict | Key number | Experiments |
 | --- | --- | --- | --- |
 | H1: nominal PPO degrades sharply on the drone | Partly | Zero-shot PPO passes all gates in the target but completes cleanly only 0.40 of the time | Exp 1, 10 |
-| H2: dynamics randomization helps the drone | No gain, no harm | Matches no-DR at 1.1M+ steps (1.00 / 1.00); 33% slower laps; better on held-out L2F (0.96 vs 0.34 gates) | Exp 4b, 9, 10, 19, 24 |
+| H1: where the drone gap comes from | Mostly motor lag | L2F's 55/249 ms motor model: 56% of prediction error, ~170% of the closed-loop gap; matching physics removes the training-course gap (0.036 → 0.036 m); 2-tick delay adds nothing | Exp 26 |
+| H2: dynamics randomization helps the drone | No gain, no harm | Matches no-DR at 1.1M+ steps (1.00 / 1.00); 33% slower laps; better on held-out L2F (0.96 vs 0.34 gates). Hover-normalized thrust removes most of the skill tax at 550k (held-out L2F 0.68 → 0.97) | Exp 4b, 9, 10, 19, 24, 27 |
 | H2: latency randomization helps | Yes | Best variant at equal budget (1.00 gates, 0.67 clean vs 0.40) | Exp 4b, 19 |
-| H3: recurrent students improve sensor-limited transfer | Yes, after a fix | Students complete the held-out course in the target at every sensor level (nominal 1.00 / 0.93 / 0.53) | Exp 10, 21, 23 |
+| H3: recurrent students improve sensor-limited transfer | Yes, after a fix | Students complete the held-out course in the target at every sensor level (nominal 1.00 / 0.93 / 0.53); source RL fine-tuning does not help (worse in 11/24 target pairs) | Exp 10, 21, 23, 28 |
 | H4: residual fine-tuning beats randomization | Yes | 1.00 clean completion in both targets vs 0.00 for DR at 550k | Exp 9, 10, 14, 18 |
 | Ablation: privileged critic | Helps learning, not transfer | Wins 64/66 seed × cell pairs | Exp 20, 22 |
 | Ablation: recurrence | Helps | GRU beats feed-forward in every target cell (by 0.32–0.48 gates) | Exp 21 |
 | Ablation: individual DR factors | Harm is cumulative | Removing any one factor only partly recovers | Exp 19 |
+| Source→target predictivity | Training course only | Spearman 0.84–0.88 on the training course, ≈0.04 held out | Exp 25 |
+| Applied-action readback | For model fitting, not the policy | Removes the phantom residual even under jitter (0.008 vs 0.071 m/s²); commanded history is the better policy input | Exp 29 |
 
 The cross-domain halves of H1–H4 ("near-lossless", "unchanged", "similar fraction in both domains", "near-zero residual")
 need Trackmania.
 
 ## What was done
 
-Six rounds of work landed over two days; Rounds 3–4 (Exp 10–18) were done by another contributor and audited, not authored, by Claude.
+Seven rounds of work landed over three days; Rounds 3–4 (Exp 10–18) were done by another contributor and audited, not authored, by Claude.
 
 | Date | Round | What | Commit |
 | --- | --- | --- | --- |
+| 2026-11-27 | Round 7 (Exp 25–29) | Five parallel sub-studies: predictivity, gap attribution, hover-normalized DR, student RL fine-tuning, applied-action readback | see git log |
+| 2026-11-26 | Literature scan | Four agents; ranked ideas in `docs/FOLLOWUP_RIFFS_ROUND2.md` | `4d9111c` |
 | 2026-11-26 | Round 6 (Exp 22–24) | Three parallel sub-studies: privileged critic, student full-course completion, DR budget sweep | `fe947fd` |
 | 2026-11-26 | Round 5 (Exp 19–21) | Proposal ablations, sensor-limited failure diagnosed and fixed, doc corrections | `56249b4` |
 | 2026-11-26 | Audit | Checked the "drone side is done" claim against the proposal and the repo | — |
@@ -95,16 +100,15 @@ Nothing open blocks the report on the drone side; Trackmania and the report itse
 - Trackmania: TMNF-C builds; no Python bindings or experiments yet. Half the proposal's claims need it; the proposal allows
   reporting an integration failure and completing the matrix on the drone platform instead.
 - Final report: not started; the material is in `docs/REAL_SIM_RESULTS.md`.
-- Literature scan for further riffs (four parallel agents, 2026-11-26): done — ranked list in
-  `docs/FOLLOWUP_RIFFS_ROUND2.md`. Key finding: Linesight pauses the live game every step, so the Trackmania
-  interface gap exists only in real-time mode; plan Trackmania as a gap ladder.
+- Literature scan: done (`docs/FOLLOWUP_RIFFS_ROUND2.md`); tier-1 ideas 1–5 tested in Round 7. Remaining ideas there (posterior DR, actuator network, DARC, GARAT, Trackmania gap ladder) are untested.
+- Student fine-tuning in a target-informed (residual-augmented) source, the next step after Exp 28's negative result.
 
 ## Where everything lives
 
 All code, results and docs are in https://github.com/ebrownhi/trackmania1 (currently public).
 
 - Results and verdicts: `docs/REAL_SIM_RESULTS.md` (Rounds 1–6); plan: `docs/PLAN_OF_ACTION.md`.
-- New scripts: `real_sim/exp19_dr_factor_ablation.py` … `exp24_dr_budget_sweep.py`; libraries `asym_policy.py`,
-  `kin_observer.py`, `student_plus.py`, `trackfree_env.py`.
-- Tests: `cd code && pixi run test` (25 pass). Simulators: `pixi run setup-sims`.
+- New scripts: `real_sim/exp19_dr_factor_ablation.py` … `exp29_applied_action_readback.py`; libraries `asym_policy.py`,
+  `kin_observer.py`, `student_plus.py`, `trackfree_env.py`, `hover_norm.py`, `student_ft.py`, `applied_readback.py`.
+- Tests: `cd code && pixi run test` (31 pass). Simulators: `pixi run setup-sims`.
 - Trained weights (`results/**/*.zip`, `*.pt`) are gitignored and exist only on the local machine.

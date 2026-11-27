@@ -1,0 +1,1215 @@
+{
+  "seeds": [
+    0
+  ],
+  "ft_steps": 150000,
+  "log_std_offset": -0.5,
+  "n_eval": 10,
+  "wall_s": 2992.8288600444794,
+  "agg": {
+    "student": {
+      "mid": {
+        "figure8": {
+          "source_l2f": {
+            "completion": {
+              "mean": 0.9,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.9
+              ]
+            },
+            "clean_completion": {
+              "mean": 0.8,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.8
+              ]
+            },
+            "gate_frac": {
+              "mean": 0.9916666666666666,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.9916666666666666
+              ]
+            },
+            "clean_gate_frac": {
+              "mean": 0.9833333333333332,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.9833333333333332
+              ]
+            },
+            "median_lap_s": {
+              "mean": 5.0600000000000005,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.0600000000000005
+              ]
+            },
+            "p90_lap_s": {
+              "mean": 5.192,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.192
+              ]
+            },
+            "track_err_m": {
+              "mean": 0.10172174782608782,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.10172174782608782
+              ]
+            },
+            "gate_err_m": {
+              "mean": 0.09658973265863564,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.09658973265863564
+              ]
+            },
+            "crash_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.0
+              ]
+            },
+            "smoothness": {
+              "mean": 0.18403371361884543,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.18403371361884543
+              ]
+            },
+            "return": {
+              "mean": 1023.3167945805999,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1023.3167945805999
+              ]
+            }
+          },
+          "target_nominal": {
+            "completion": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_completion": {
+              "mean": 0.9,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.9
+              ]
+            },
+            "gate_frac": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_gate_frac": {
+              "mean": 0.9916666666666666,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.9916666666666666
+              ]
+            },
+            "median_lap_s": {
+              "mean": 5.665,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.665
+              ]
+            },
+            "p90_lap_s": {
+              "mean": 6.064000000000001,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                6.064000000000001
+              ]
+            },
+            "track_err_m": {
+              "mean": 0.12326770436830811,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.12326770436830811
+              ]
+            },
+            "gate_err_m": {
+              "mean": 0.1214456898171574,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.1214456898171574
+              ]
+            },
+            "crash_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.0
+              ]
+            },
+            "smoothness": {
+              "mean": 0.3184197101585543,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.3184197101585543
+              ]
+            },
+            "return": {
+              "mean": 1120.830418214318,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1120.830418214318
+              ]
+            }
+          },
+          "target_perturbed": {
+            "completion": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_completion": {
+              "mean": 0.6,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.6
+              ]
+            },
+            "gate_frac": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_gate_frac": {
+              "mean": 0.9666666666666666,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.9666666666666666
+              ]
+            },
+            "median_lap_s": {
+              "mean": 5.385,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.385
+              ]
+            },
+            "p90_lap_s": {
+              "mean": 5.871,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.871
+              ]
+            },
+            "track_err_m": {
+              "mean": 0.12489278308158905,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.12489278308158905
+              ]
+            },
+            "gate_err_m": {
+              "mean": 0.10795278487910204,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.10795278487910204
+              ]
+            },
+            "crash_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.0
+              ]
+            },
+            "smoothness": {
+              "mean": 0.417280390085761,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.417280390085761
+              ]
+            },
+            "return": {
+              "mean": 984.744739745867,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                984.744739745867
+              ]
+            }
+          }
+        },
+        "ellipse3d": {
+          "source_l2f": {
+            "completion": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.0
+              ]
+            },
+            "clean_completion": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.0
+              ]
+            },
+            "gate_frac": {
+              "mean": 0.25833333333333336,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.25833333333333336
+              ]
+            },
+            "clean_gate_frac": {
+              "mean": 0.20833333333333334,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.20833333333333334
+              ]
+            },
+            "median_lap_s": {
+              "mean": NaN,
+              "std": NaN,
+              "n": 0,
+              "values": [
+                NaN
+              ]
+            },
+            "p90_lap_s": {
+              "mean": NaN,
+              "std": NaN,
+              "n": 0,
+              "values": [
+                NaN
+              ]
+            },
+            "track_err_m": {
+              "mean": 0.4133425824399083,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.4133425824399083
+              ]
+            },
+            "gate_err_m": {
+              "mean": 0.3229017093743958,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.3229017093743958
+              ]
+            },
+            "crash_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "smoothness": {
+              "mean": 0.14991311281196829,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.14991311281196829
+              ]
+            },
+            "return": {
+              "mean": 290.0069575864085,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                290.0069575864085
+              ]
+            }
+          },
+          "target_nominal": {
+            "completion": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_completion": {
+              "mean": 0.8,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.8
+              ]
+            },
+            "gate_frac": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_gate_frac": {
+              "mean": 0.9833333333333332,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.9833333333333332
+              ]
+            },
+            "median_lap_s": {
+              "mean": 5.21,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.21
+              ]
+            },
+            "p90_lap_s": {
+              "mean": 5.814000000000001,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.814000000000001
+              ]
+            },
+            "track_err_m": {
+              "mean": 0.11637829449446364,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.11637829449446364
+              ]
+            },
+            "gate_err_m": {
+              "mean": 0.13042371024784885,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.13042371024784885
+              ]
+            },
+            "crash_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.0
+              ]
+            },
+            "smoothness": {
+              "mean": 0.31518367971491823,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.31518367971491823
+              ]
+            },
+            "return": {
+              "mean": 1052.725050510731,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1052.725050510731
+              ]
+            }
+          },
+          "target_perturbed": {
+            "completion": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_completion": {
+              "mean": 0.9,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.9
+              ]
+            },
+            "gate_frac": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_gate_frac": {
+              "mean": 0.9833333333333334,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.9833333333333334
+              ]
+            },
+            "median_lap_s": {
+              "mean": 5.195,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.195
+              ]
+            },
+            "p90_lap_s": {
+              "mean": 5.612,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.612
+              ]
+            },
+            "track_err_m": {
+              "mean": 0.12727659031916408,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.12727659031916408
+              ]
+            },
+            "gate_err_m": {
+              "mean": 0.12524620360691216,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.12524620360691216
+              ]
+            },
+            "crash_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.0
+              ]
+            },
+            "smoothness": {
+              "mean": 0.3895057114861122,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.3895057114861122
+              ]
+            },
+            "return": {
+              "mean": 964.3415631431426,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                964.3415631431426
+              ]
+            }
+          }
+        }
+      }
+    },
+    "student_ft": {
+      "mid": {
+        "figure8": {
+          "source_l2f": {
+            "completion": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_completion": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "gate_frac": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_gate_frac": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "median_lap_s": {
+              "mean": 4.905,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                4.905
+              ]
+            },
+            "p90_lap_s": {
+              "mean": 5.221,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.221
+              ]
+            },
+            "track_err_m": {
+              "mean": 0.09037136609170983,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.09037136609170983
+              ]
+            },
+            "gate_err_m": {
+              "mean": 0.0830781525561848,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.0830781525561848
+              ]
+            },
+            "crash_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.0
+              ]
+            },
+            "smoothness": {
+              "mean": 0.1810158697280087,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.1810158697280087
+              ]
+            },
+            "return": {
+              "mean": 1036.7447740423972,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1036.7447740423972
+              ]
+            }
+          },
+          "target_nominal": {
+            "completion": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_completion": {
+              "mean": 0.2,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.2
+              ]
+            },
+            "gate_frac": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_gate_frac": {
+              "mean": 0.9166666666666666,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.9166666666666666
+              ]
+            },
+            "median_lap_s": {
+              "mean": 5.835000000000001,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.835000000000001
+              ]
+            },
+            "p90_lap_s": {
+              "mean": 6.2,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                6.2
+              ]
+            },
+            "track_err_m": {
+              "mean": 0.12318340984584546,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.12318340984584546
+              ]
+            },
+            "gate_err_m": {
+              "mean": 0.12330203088505923,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.12330203088505923
+              ]
+            },
+            "crash_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.0
+              ]
+            },
+            "smoothness": {
+              "mean": 0.2946058420769422,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.2946058420769422
+              ]
+            },
+            "return": {
+              "mean": 1146.6667304049918,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1146.6667304049918
+              ]
+            }
+          },
+          "target_perturbed": {
+            "completion": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_completion": {
+              "mean": 0.4,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.4
+              ]
+            },
+            "gate_frac": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_gate_frac": {
+              "mean": 0.9249999999999998,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.9249999999999998
+              ]
+            },
+            "median_lap_s": {
+              "mean": 5.275,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.275
+              ]
+            },
+            "p90_lap_s": {
+              "mean": 5.921,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.921
+              ]
+            },
+            "track_err_m": {
+              "mean": 0.1372331853283304,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.1372331853283304
+              ]
+            },
+            "gate_err_m": {
+              "mean": 0.12700781381509874,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.12700781381509874
+              ]
+            },
+            "crash_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.0
+              ]
+            },
+            "smoothness": {
+              "mean": 0.42359666917302574,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.42359666917302574
+              ]
+            },
+            "return": {
+              "mean": 969.65892623577,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                969.65892623577
+              ]
+            }
+          }
+        },
+        "ellipse3d": {
+          "source_l2f": {
+            "completion": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.0
+              ]
+            },
+            "clean_completion": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.0
+              ]
+            },
+            "gate_frac": {
+              "mean": 0.18333333333333335,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.18333333333333335
+              ]
+            },
+            "clean_gate_frac": {
+              "mean": 0.16666666666666669,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.16666666666666669
+              ]
+            },
+            "median_lap_s": {
+              "mean": NaN,
+              "std": NaN,
+              "n": 0,
+              "values": [
+                NaN
+              ]
+            },
+            "p90_lap_s": {
+              "mean": NaN,
+              "std": NaN,
+              "n": 0,
+              "values": [
+                NaN
+              ]
+            },
+            "track_err_m": {
+              "mean": 0.3859486365037719,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.3859486365037719
+              ]
+            },
+            "gate_err_m": {
+              "mean": 0.3248838118236226,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.3248838118236226
+              ]
+            },
+            "crash_rate": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "smoothness": {
+              "mean": 0.1585638060919428,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.1585638060919428
+              ]
+            },
+            "return": {
+              "mean": 233.11671877997605,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                233.11671877997605
+              ]
+            }
+          },
+          "target_nominal": {
+            "completion": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_completion": {
+              "mean": 0.9,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.9
+              ]
+            },
+            "gate_frac": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_gate_frac": {
+              "mean": 0.9916666666666666,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.9916666666666666
+              ]
+            },
+            "median_lap_s": {
+              "mean": 5.279999999999999,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.279999999999999
+              ]
+            },
+            "p90_lap_s": {
+              "mean": 5.801,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.801
+              ]
+            },
+            "track_err_m": {
+              "mean": 0.10948265202320831,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.10948265202320831
+              ]
+            },
+            "gate_err_m": {
+              "mean": 0.12032835087716766,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.12032835087716766
+              ]
+            },
+            "crash_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.0
+              ]
+            },
+            "smoothness": {
+              "mean": 0.2944317847022463,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.2944317847022463
+              ]
+            },
+            "return": {
+              "mean": 1069.542382038767,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1069.542382038767
+              ]
+            }
+          },
+          "target_perturbed": {
+            "completion": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_completion": {
+              "mean": 0.5,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.5
+              ]
+            },
+            "gate_frac": {
+              "mean": 1.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                1.0
+              ]
+            },
+            "clean_gate_frac": {
+              "mean": 0.9416666666666668,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.9416666666666668
+              ]
+            },
+            "median_lap_s": {
+              "mean": 5.23,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.23
+              ]
+            },
+            "p90_lap_s": {
+              "mean": 5.781000000000001,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                5.781000000000001
+              ]
+            },
+            "track_err_m": {
+              "mean": 0.13634602828919828,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.13634602828919828
+              ]
+            },
+            "gate_err_m": {
+              "mean": 0.13426992036613478,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.13426992036613478
+              ]
+            },
+            "crash_rate": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.0
+              ]
+            },
+            "smoothness": {
+              "mean": 0.3791542858572922,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                0.3791542858572922
+              ]
+            },
+            "return": {
+              "mean": 981.6690531917496,
+              "std": 0.0,
+              "n": 1,
+              "values": [
+                981.6690531917496
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "calibration": {
+    "mid_s0": {
+      "target_nominal": {
+        "n_samples": 2954,
+        "label_rms_m": 0.301049468753079,
+        "heldout_resid_rms_m": 0.05434612434894948
+      },
+      "target_perturbed": {
+        "n_samples": 2895,
+        "label_rms_m": 0.3229974182934566,
+        "heldout_resid_rms_m": 0.05472970508947988
+      }
+    }
+  },
+  "timing": {
+    "mid_s0": {
+      "train_s": 2886.354041814804,
+      "total_s": 2989.9757537841797
+    }
+  },
+  "per_seed": {
+    "mid_s0": {
+      "student": {
+        "figure8": {
+          "source_l2f": {
+            "completion": 0.9,
+            "clean_completion": 0.8,
+            "gate_frac": 0.9916666666666666,
+            "crash_rate": 0.0
+          },
+          "target_nominal": {
+            "completion": 1.0,
+            "clean_completion": 0.9,
+            "gate_frac": 1.0,
+            "crash_rate": 0.0
+          },
+          "target_perturbed": {
+            "completion": 1.0,
+            "clean_completion": 0.6,
+            "gate_frac": 1.0,
+            "crash_rate": 0.0
+          }
+        },
+        "ellipse3d": {
+          "source_l2f": {
+            "completion": 0.0,
+            "clean_completion": 0.0,
+            "gate_frac": 0.25833333333333336,
+            "crash_rate": 1.0
+          },
+          "target_nominal": {
+            "completion": 1.0,
+            "clean_completion": 0.8,
+            "gate_frac": 1.0,
+            "crash_rate": 0.0
+          },
+          "target_perturbed": {
+            "completion": 1.0,
+            "clean_completion": 0.9,
+            "gate_frac": 1.0,
+            "crash_rate": 0.0
+          }
+        }
+      },
+      "student_ft": {
+        "figure8": {
+          "source_l2f": {
+            "completion": 1.0,
+            "clean_completion": 1.0,
+            "gate_frac": 1.0,
+            "crash_rate": 0.0
+          },
+          "target_nominal": {
+            "completion": 1.0,
+            "clean_completion": 0.2,
+            "gate_frac": 1.0,
+            "crash_rate": 0.0
+          },
+          "target_perturbed": {
+            "completion": 1.0,
+            "clean_completion": 0.4,
+            "gate_frac": 1.0,
+            "crash_rate": 0.0
+          }
+        },
+        "ellipse3d": {
+          "source_l2f": {
+            "completion": 0.0,
+            "clean_completion": 0.0,
+            "gate_frac": 0.18333333333333335,
+            "crash_rate": 1.0
+          },
+          "target_nominal": {
+            "completion": 1.0,
+            "clean_completion": 0.9,
+            "gate_frac": 1.0,
+            "crash_rate": 0.0
+          },
+          "target_perturbed": {
+            "completion": 1.0,
+            "clean_completion": 0.5,
+            "gate_frac": 1.0,
+            "crash_rate": 0.0
+          }
+        }
+      }
+    }
+  }
+}

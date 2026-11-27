@@ -15,11 +15,14 @@ Run any experiment with `../code/.pixi/envs/default/bin/python real_sim/<script>
 | Relay limit-cycle period `4(d+1)` | Exp 2 | ⚠️ **Corrected:** measured and exact discrete model give **4d+2 ticks** |
 | Lemma 1.1 ZOH vs zero-mask dropout | Exp 3 | ✅ ZOH: 100% gates up to p=0.5; zero-mask crashes every seed at p ≥ 0.2; staleness = d_o + p/(1-p) |
 | Thm 2.2 action buffer (H2 guardrail) | Exp 4, 4b | ✅ buffer16 survives d=8–12 where a_{t-1} crashes; randomized-latency buffer: 0 crashes in target at all d |
-| H2' dynamics DR helps | Exp 4b, 9, 10, 19, 24 | ⚠️ **no transfer gain, no transfer harm:** the Exp 10/19 penalty is under-training at 550k (Exp 24: full DR matches no-DR at ≥1.1M, `1.00 / 1.00` in both targets; ceiling effect), at a ~33% lap-time cost. DR does improve held-out-course robustness under L2F's tight thrust limits (`0.96` vs `0.34` gates at 2.2M). Latency-only DR is best at 550k |
+| H2' dynamics DR helps | Exp 4b, 9, 10, 19, 24, 27 | ⚠️ **no transfer gain, no transfer harm:** the Exp 10/19 penalty is under-training at 550k (Exp 24: full DR matches no-DR at ≥1.1M; ceiling effect). **Hover-normalized thrust removes most of that skill tax at 550k** (Exp 27: full-DR held-out L2F `0.68 → 0.97`). Thrust-only DR + latency keeps `1.00` training-course skill and recovers ~2/3 of the 33% lap-time cost, but no DR arm beats no-DR's target clean completion at 550k. Latency-only DR remains best at equal budget |
 | H1' smoothness penalty (PPO) | Exp 7, 7b, 7c | ⚠️ partial: penalty alone (Exp 7) ❌; with buffer + latency DR, λ=0 learns bang-bang control whose target error is 4.5× its source error; λ=0.3 warm-start halves chattering and lowers target error at every d (0.26→0.18 m at d=0, 0.50→0.27 m at d=1); λ=0.3 from scratch fails to learn on 2/3 seeds |
 | Thm 2.4 recurrent-observer OOD | Exp 5, 5b | ⚠️ partial: with a 2.3× larger gap, fixed-dynamics estimators degrade (GRU 0.21, FF 0.23 m/s) and randomized ones hold (0.14, 0.15 m/s); 'GRU_fixed worse than FF' not observed |
-| H3' recurrent students + randomized distillation | Exp 5, 5b, 10, 21, 23 | ✅ supported (Exp 21) and now reaching **full-course completion** (Exp 23). With a 3-flight PnP-bias GP, the track-free GRU student completes held-out `ellipse3d` in the PyBullet target at every sensor level (nominal `1.00 / 0.93 / 0.53`, perturbed `0.77 / 0.60 / 0.60` at clean / mid / hard, vs `0` before). Multi-track estimator training lifts L2F-source completion `0.33 → 0.60` (clean). Open: collision-free completion `≤ 0.50`; the source at hard stays at `0` (teacher ceiling) |
+| H3' recurrent students + randomized distillation | Exp 5, 5b, 10, 21, 23, 28 | ✅ supported (Exp 21) and now reaching **full-course completion** (Exp 23). With a 3-flight PnP-bias GP, the track-free GRU student completes held-out `ellipse3d` in the PyBullet target at every sensor level (nominal `1.00 / 0.93 / 0.53`, perturbed `0.77 / 0.60 / 0.60` at clean / mid / hard, vs `0` before). Multi-track estimator training lifts L2F-source completion `0.33 → 0.60` (clean). Open: collision-free completion `≤ 0.50`; the source at hard stays at `0` (teacher ceiling); **Exp 28:** RL fine-tuning the student in randomized L2F raises source skill but lowers target clean completion in 11/24 pairs, so source RL does not close it |
 | Privileged critic (proposal ablation) | Exp 20, 22 | ✅ with a track-free-capable actor (Exp 22): asym critic > masked critic in `64/66` seed × cell pairs. Asym learns the training course (`0.98–1.00` gates) at every sensor level; sym never exceeds `0.45`. Held-out targets `0.30–0.51` vs `0.07–0.08`. It fixes learnability, not transfer (Exp 21 students transfer better) |
+| H1 gap attribution (drone) | Exp 26 | ✅ the drone gap is mostly the actuator model: L2F's 55/249 ms motor lag accounts for 56% of 0.5 s prediction error and 77% of attitude error (exact Shapley; then drag 19%, mass 16%), and ~170% of the closed-loop gap. Matching all six physical factors removes 85% of prediction error and the training-course transfer gap (`0.036 → 0.036 m`). The target's 2-tick delay adds nothing |
+| Sim→target predictivity | Exp 25 | ✅ training course: L2F ranking predicts PyBullet ranking (Spearman 0.84–0.88). ❌ held-out course: none for exact-state PPO (≈0.04), because held-out L2F is the harder, differently saturating environment. Target-side corrections break predictivity by construction |
+| Applied-action readback | Exp 29 | ✅ for residual fitting: removes the Thm 2.5 phantom without delay identification, including under jitter where the scan fails (L2F `|r̂|` 0.008 vs 0.071). ⚠️ as a policy input: helps only in the delay-fragile source with a narrow training delay; the commanded history wins in the target and under latency DR (Thm 2.2) |
 | Nuance #1 (velocity removal unobservable) | Exp 5 | ❌ not reproduced (2 cm position noise still gives ~0.1 m/s velocity) |
 | Thm 2.5 phantom residual / delay alignment | Exp 6 | ✅ Δf≡0 control: d̂=3 exact, naive 0.12 vs aligned 0.007 m/s² (17×) |
 | Guardrail #5 + Nuance #2 joint (d̂, τ̂) SysID | Exp 6 | ✅ needed on PyBullet: delay-only scan fails (d̂=0); joint scan recovers d̂=3, τ̂=30 ms exactly |
@@ -400,7 +403,7 @@ AR(1) action-noise exploration was tried for F1 first and gave no gain.
 - **Persistent cost:** DR policies fly laps about `33%` slower (`5.60` vs `4.21 s` at 2.2M), a robustness-for-speed trade-off (cf. Prop 2.3 / Exp 17).
 - **Caveats:** 3 seeds; clean completion is nearly binary per seed; the targets are too easy at ≥1.1M to rank arms.
 
-## Round 7 — In progress (2026-11-26; usage limit hit mid-round)
+## Round 7 — Where the gap comes from, and what it costs (2026-11-26/27; five parallel sub-studies)
 
 ### Exp 25 — Does source performance predict target performance? (sim→target predictivity)
 ([exp25_predictivity.py](../real_sim/exp25_predictivity.py); no training; 51 exact-state PPO policies and 118 sensor-limited students from Exp 10/19/21–24; Pearson, Spearman, and MMRV (definition from memory of SIMPLER); 95% bootstrap CIs over policies.)
@@ -409,7 +412,100 @@ AR(1) action-noise exploration was tried for F1 first and gave no gain.
 - **Target-side corrections break predictivity by construction:** adding the F3 GP students raises clean-completion MMRV from `0.00` to `0.49`.
 - **Caveats:** target ceiling compresses correlations; checkpoints sharing a trunk aren't independent.
 
-Exp 26 (gap attribution), 27 (hover-normalized thrust DR), 28 (student RL fine-tuning) and 29 (applied-action readback) were started but stopped unfinished when the usage limit was reached; any partial scripts/outputs in `real_sim/exp26–29*` and `results/real_sim/exp26–29*` are uncommitted and unverified.
+### Exp 26 — Per-component attribution of the L2F → PyBullet gap (H1)
+([exp26_gap_attribution.py](../real_sim/exp26_gap_attribution.py).) `L2FBackendPB` sets any subset of six L2F factors to our PyBullet target's values. The CTBR loop still assumes L2F's mass and inertia, as when deployed. Matching all six reproduces PyBullet's hover drift (`2.069` vs `2.065 m` after 1 s) and body-rate step response (`2.49` vs `2.48 rad/s` at 150 ms).
+
+| Factor | L2F | Our PyBullet target |
+|---|---|---|
+| mass | `0.0306 kg` | `0.027 kg` |
+| inertia | `9/10/17 e-6` | `14/14/21.7 e-6` |
+| thrust curve | ceiling T/W `1.47` | T/W `2.25` |
+| motor lag | `55 ms` rise / `249 ms` fall | `30 / 30 ms` |
+| yaw torque constant | `0.0047` | km/kf = `0.025` |
+| drag | none | PyBullet's drag model |
+
+**Part A — training-free, exact Shapley over all 64 subsets.** Open-loop replay of logged target actions from 480 start points, starting from identical states and equivalent rotor states. Share of error removed by matching each factor (95% bootstrap CI):
+
+| Factor | position error @ 0.5 s | velocity error @ 0.1 s | attitude error @ 0.1 s |
+|---|---|---|---|
+| motor lag | **56%** [51, 62] | 21% [18, 25] | **77%** [72, 81] |
+| drag | 19% [18, 19] | 26% [25, 27] | 0 |
+| mass | 16% [14, 18] | **43%** [39, 46] | 0 |
+| thrust curve / T/W | 6% [4, 8] | 7% [6, 8] | 10% [9, 12] |
+| inertia | 5% [5, 6] | 6% [5, 7] | 12% [11, 13] |
+| yaw torque constant | −2% [−3, −1] | −3% [−3, −2] | 1% [−1, 2] |
+| L2F → all six matched | `0.196 → 0.030 m` | `0.124 → 0.025 m/s` | `8.3° → 0.15°` |
+
+The factors interact strongly. Motor lag matched alone cuts position error only `0.196 → 0.182 m`; everything except motor lag leaves `0.229 m`, worse than plain L2F.
+
+**Part B — retrained PPO (Exp 10 recipe, 3 seeds), evaluated in `target_nominal` (d = 2).** Plain L2F = Exp 19 `none`.
+
+| Source variant | figure8: own-source → target tracking error | figure8 target clean | held-out `ellipse3d` target gates / clean / error |
+|---|---|---|---|
+| plain L2F | `0.043 → 0.087 m` | `0.67` | `1.00 / 0.40 / 0.133 m` |
+| motor lag only | `0.059 → 0.088 m` | `1.00` | **`1.00 / 1.00 / 0.111 m`** |
+| all but motor lag | `0.049 → 0.184 m` | `0.00` | `0.88 / 0.10 / 0.242 m` |
+| all six physics | `0.036 → 0.036 m` | `1.00` | `0.84 / 0.33 / 0.160 m` |
+| all six + delay 2 | `0.042 → 0.041 m` | `1.00` | `0.86 / 0.67 / 0.152 m` |
+
+- **The training-course transfer gap disappears once the physics is matched** (target error = source error, `0.036 m`). The target's 2-tick action delay adds nothing measurable: on the drone this is a dynamics gap, not an interface gap.
+- **Motor lag is the decisive factor:** it accounts for about 170% of the closed-loop gap, and the other five together for −70%. Matching everything except the motors makes transfer worse (clean completion `0.00`); matching only the motors gives the best held-out target result.
+- **Caveats:** matched-physics variants crash on held-out `ellipse3d` in their *own* source too (33–67%; more aggressive flight at T/W 2.25), so their weaker held-out numbers are source-side generalization. Part B retrains only 4 of the 64 variants. The target is our wrapper with its added 30 ms motor lag.
+
+### Exp 27 — Hover-normalized thrust: is the DR skill tax avoidable? (H2')
+([exp27_hover_norm_dr.py](../real_sim/exp27_hover_norm_dr.py), [hover_norm.py](../real_sim/hover_norm.py); 550k steps, Exp 10/19 recipe, 3 seeds; `none` / `full` reused from Exp 19.)
+Action: `c = c_hover·(1 + 0.6116·a0)` with `c_hover = g·m_true/m_cfg`, so `a0 = 0` hovers on any airframe; slope and envelope match the default action. **Assumes the true mass is known** (the thrust coefficient stays unknown).
+
+| Arm | figure8 source gates | held-out `source_l2f` gates / clean / lap | `target_nominal` gates / clean / lap | `target_perturbed` gates / clean / lap |
+|---|---|---|---|---|
+| `none` | `1.00` | `0.80 / 0.37 / 4.79 s` (crash `0.27`) | `1.00 / 0.40 / 5.02 s` | `1.00 / 0.40 / 4.91 s` |
+| `full` | `0.78` | `0.68 / 0.33 / 6.99 s` | `0.75 / 0.00 / 7.12 s` | `0.67 / 0.00 / 6.95 s` |
+| `hn_none` | `1.00` | `0.36 / 0.00 / —` (crash `0.97`) | `1.00 / 0.63 / 5.03 s` | `1.00 / 0.87 / 4.73 s` |
+| `hn_thrust_lat` | `1.00` | `0.86 / 0.67 / 5.57 s` (crash `0`) | `0.90 / 0.00 / 5.89 s` | `0.96 / 0.67 / 5.57 s` |
+| `hn_full` | `0.97` | `0.97 / 0.00 / 6.09 s` (crash `0`) | `0.86 / 0.00 / 6.29 s` | `0.92 / 0.00 / 6.33 s` |
+| `full_bigbatch` (4× batch) | `0.31` | `0.11 / 0.00 / —` | `0.08 / 0.00 / —` | `0.01 / 0.00 / —` |
+
+- **Hover normalization removes most of the DR *skill* tax:** with full DR, source training-course gates `0.78 → 0.97` and held-out L2F `0.68 → 0.97` (0 crashes) at 550k, which plain full DR needed 2.2M steps to reach (Exp 24).
+- **Thrust-only DR + latency is the best compromise:** no-DR skill on the training course (`1.00`), DR-like held-out-L2F robustness (`0.86`, 0 crashes), and about two-thirds of the lap-time cost recovered (`5.89` vs `7.12` vs `5.02 s`).
+- **Not removed:** no DR arm reaches no-DR's target clean completion at 550k (best target arm `hn_none`, `0.63 / 0.87` clean, within seed noise of `none`; it overfits held-out L2F).
+- **Large-batch PPO hurts at equal steps** (4× fewer updates leaves it under-trained), so SimpleFlight's large-batch claim does not carry over at this budget.
+
+### Exp 28 — RL fine-tuning of the distilled sensor-limited student (H3')
+([exp28_student_rl_finetune.py](../real_sim/exp28_student_rl_finetune.py), [student_ft.py](../real_sim/student_ft.py); 3 seeds × mid / hard sensor; `150k` PPO steps in randomized L2F, d~U{0..4}.)
+The actor is the teacher MLP on the estimator-filled observation (deployable). The critic is the teacher's value net on the privileged observation. The policy is initialized as an exact copy of the student (unit-tested).
+
+| Course, sensor | Arm | `source_l2f` compl / clean / gates / crash | `target_nominal` | `target_perturbed` |
+|---|---|---|---|---|
+| ellipse3d mid | student | `0.27 / 0.20 / 0.51 / 0.67` | `0.80 / 0.43 / 0.97 / 0.00` | `0.50 / 0.30 / 0.93 / 0.00` |
+| ellipse3d mid | + RL fine-tune | `0.27 / 0.10 / 0.44 / 0.67` | `0.63 / 0.30 / 0.96 / 0.00` | `0.50 / 0.20 / 0.94 / 0.00` |
+| ellipse3d hard | student | `0.00 / 0.00 / 0.18 / 1.00` | `0.70 / 0.30 / 0.97 / 0.00` | `0.63 / 0.03 / 0.96 / 0.00` |
+| ellipse3d hard | + RL fine-tune | `0.00 / 0.00 / 0.20 / 0.97` | `0.53 / 0.30 / 0.95 / 0.00` | `0.43 / 0.03 / 0.94 / 0.00` |
+| figure8 mid | student | `0.70 / 0.50 / 0.94 / 0.03` | `1.00 / 0.73 / 1.00 / 0.00` | `0.57 / 0.30 / 0.94 / 0.00` |
+| figure8 mid | + RL fine-tune | `0.90 / 0.70 / 0.99 / 0.00` | `1.00 / 0.23 / 1.00 / 0.00` | `0.60 / 0.13 / 0.95 / 0.00` |
+
+- **Negative result:** source RL fine-tuning raises source skill (mid: completion `0.70 → 0.90`) but lowers target clean completion in `11/24` seed × cell pairs (raises it in `6/24`). Held-out target completion drops (`0.80 → 0.63` nominal / mid).
+- **The collision-free gap is not a source-learning problem:** the student over-fits L2F. Fine-tuning would need target-informed dynamics (e.g. the Swift residual-augmented source).
+- **Caveats:** one setting (lr `5e-5`, `150k` steps); high seed spread (std up to `0.42`). The baseline differs from Exp 23's because a different policy flew the F3 calibration flights, so the calibration policy matters for the bias GP.
+
+### Exp 29 — Applied-action readback vs commanded history (GT Sophy; Thm 2.2 / 2.5)
+([exp29_applied_action_readback.py](../real_sim/exp29_applied_action_readback.py), [applied_readback.py](../real_sim/applied_readback.py); `JitterDrone` gives each command a random delay ~ U{d_min..d_max}, and the actuator holds the newest command to arrive.)
+
+**Part B — the readback removes the phantom residual, including under jitter** (3 seeds; 6 calibration + 8 held-out flights). Cells are `|r̂|` (mean predicted linear residual, m/s²) / open-loop replay error at 1 s:
+
+| Target | naive (cmd, d′ = 0) | scan (cmd, d̂) | **applied (d′ = 0)** |
+|---|---|---|---|
+| L2F + d = 3 (Δf ≡ 0) | `0.108 / 0.45 m` | `0.006 / 0.08 m` (d̂ = 3) | `0.006 / 0.08 m` |
+| L2F + jitter U{1..4} (Δf ≡ 0) | `0.108 / 0.72 m` | `0.071 / 0.57 m` (d̂ = 2) | **`0.008 / 0.11 m`** |
+| PyBullet + d = 3 | `1.38 / 0.29 m` | `1.38 / 0.17 m` (d̂ = 3) | `1.38 / 0.17 m` |
+| PyBullet + jitter U{1..4} | `1.46 / 0.47 m` | `1.43 / 0.45 m` (d̂ = 2) | **`1.39 / 0.21 m`** |
+
+(Truth is 0 for the L2F targets; about 1.4 m/s² is the real PyBullet dynamics gap.) With a fixed delay the readback equals the delay scan exactly, with no identification step. Under jitter, no single d̂ aligns the data: the scan keeps a 9× phantom in L2F and a 2× worse replay in PyBullet. **Thm 2.5 confirmed; applied-action logging is the robust fix for residual fitting.**
+
+**Part A — as a policy input, the readback does not replace the commanded history** (racing PPO, Exp 10 recipe, 3 seeds, held-out `ellipse3d`, gates / clean / crash):
+- **Trained at fixed d = 1, in the delay-fragile L2F source, readback is far more robust:** d = 2 gives `0.97 / 0.67 / 0.00` vs commanded `0.45 / 0.06 / 0.78`; jitter gives `0.97 / 0.67 / 0.00` vs `0.36 / 0.00 / 1.00`.
+- **In the PyBullet target, or with latency randomization U{0..2}, the commanded history wins everywhere:** target d = 6 gives `1.00 / 1.00` vs readback `0.40–0.50 / 0.00`. `both` falls in between.
+- **Consistent with Thm 2.2:** the commanded buffer carries the in-flight actions a policy needs to predict under delay; the readback only says what is in effect now. Use the readback for model fitting, and the commanded history plus latency DR for the policy.
+- **Caveats:** every arm crashes in L2F at d ≥ 3 (known L2F delay fragility); 6 eval episodes per cell; the readback is idealized (an exact copy of the executed command).
 
 ## Setup & reproducibility notes
 - Reproducible environment & build scripts are captured in [code/pixi.toml](../code/pixi.toml) and [code/setup_sims.sh](../code/setup_sims.sh); run `pixi run --manifest-path code/pixi.toml test` (`17/17` tests passing in ~5 s).

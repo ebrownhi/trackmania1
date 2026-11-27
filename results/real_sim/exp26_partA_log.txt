@@ -1,0 +1,37 @@
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+logged 6 target flights (6530 ticks) in 4s
+Part A: 64 variants in 2896s
+
+[pos_m@50_all] L2F 0.1959 -> all matched 0.0298 (residual 15%)
+  motor    shapley +0.0935 [+0.0852, +0.1024]  =  56.3% of gap | alone 0.1819 | all-but 0.2287
+  drag     shapley +0.0309 [+0.0295, +0.0321]  =  18.6% of gap | alone 0.1734 | all-but 0.0821
+  mass     shapley +0.0261 [+0.0228, +0.0296]  =  15.7% of gap | alone 0.2454 | all-but 0.1516
+  thrust   shapley +0.0104 [+0.0071, +0.0133]  =   6.2% of gap | alone 0.1914 | all-but 0.0591
+  inertia  shapley +0.0088 [+0.0078, +0.0096]  =   5.3% of gap | alone 0.1892 | all-but 0.0435
+  yaw      shapley -0.0036 [-0.0052, -0.0019]  =  -2.2% of gap | alone 0.1995 | all-but 0.0446
+
+[vel_mps@10_all] L2F 0.1235 -> all matched 0.0246 (residual 20%)
+  mass     shapley +0.0420 [+0.0387, +0.0456]  =  42.5% of gap | alone 0.1259 | all-but 0.1240
+  drag     shapley +0.0256 [+0.0246, +0.0264]  =  25.9% of gap | alone 0.1067 | all-but 0.0675
+  motor    shapley +0.0208 [+0.0179, +0.0244]  =  21.0% of gap | alone 0.1446 | all-but 0.1030
+  thrust   shapley +0.0071 [+0.0061, +0.0083]  =   7.2% of gap | alone 0.1164 | all-but 0.0379
+  inertia  shapley +0.0059 [+0.0052, +0.0066]  =   5.9% of gap | alone 0.1151 | all-but 0.0272
+  yaw      shapley -0.0025 [-0.0029, -0.0020]  =  -2.5% of gap | alone 0.1254 | all-but 0.0270
+
+[att_deg@10_all] L2F 8.3068 -> all matched 0.1520 (residual 2%)
+  motor    shapley +6.2651 [+5.8681, +6.5737]  =  76.8% of gap | alone 1.9475 | all-but 6.6095
+  inertia  shapley +1.0102 [+0.9307, +1.0821]  =  12.4% of gap | alone 6.6903 | all-but 0.7437
+  thrust   shapley +0.8260 [+0.7283, +0.9671]  =  10.1% of gap | alone 7.4870 | all-but 1.1493
+  yaw      shapley +0.0535 [-0.0497, +0.1759]  =   0.7% of gap | alone 9.4217 | all-but 1.5339
+  mass     shapley +0.0000 [+0.0000, +0.0000]  =   0.0% of gap | alone 8.3068 | all-but 0.1520
+  drag     shapley +0.0000 [+0.0000, +0.0000]  =   0.0% of gap | alone 8.3068 | all-but 0.1520
+
+[pos_m@50_ellipse3d] L2F 0.1973 -> all matched 0.0292 (residual 15%)
+  motor    shapley +0.0949 [+0.0812, +0.1066]  =  56.5% of gap | alone 0.1761 | all-but 0.2210
+  drag     shapley +0.0317 [+0.0302, +0.0333]  =  18.8% of gap | alone 0.1724 | all-but 0.0809
+  mass     shapley +0.0258 [+0.0205, +0.0318]  =  15.3% of gap | alone 0.2434 | all-but 0.1461
+  thrust   shapley +0.0127 [+0.0085, +0.0184]  =   7.5% of gap | alone 0.1907 | all-but 0.0590
+  inertia  shapley +0.0077 [+0.0063, +0.0088]  =   4.6% of gap | alone 0.1904 | all-but 0.0392
+  yaw      shapley -0.0048 [-0.0072, -0.0026]  =  -2.8% of gap | alone 0.2033 | all-but 0.0400

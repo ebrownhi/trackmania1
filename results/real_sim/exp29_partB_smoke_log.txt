@@ -1,0 +1,17 @@
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+Exp 29 B: 4 jobs in 2879s
+
+|r_hat_lin| [m/s^2] | replay err @1 s with residual / without [m]   (mean ± std)
+  l2f_d3     naive       0.109 ± 0.000 |    0.832 ± 0.000 /    0.774 ± 0.000   picks (d, tau): [(0, 'l2f_native')]
+  l2f_d3     scan        0.005 ± 0.000 |    0.614 ± 0.000 /    0.609 ± 0.000   picks (d, tau): [(3, 'l2f_native')]
+  l2f_d3     applied     0.005 ± 0.000 |    0.614 ± 0.000 /    0.609 ± 0.000   picks (d, tau): [(0, 'l2f_native')]
+  l2f_jit14  naive       0.116 ± 0.000 |    1.256 ± 0.000 /    1.179 ± 0.000   picks (d, tau): [(0, 'l2f_native')]
+  l2f_jit14  scan        0.076 ± 0.000 |    1.058 ± 0.000 /    0.997 ± 0.000   picks (d, tau): [(2, 'l2f_native')]
+  l2f_jit14  applied     0.009 ± 0.000 |    0.854 ± 0.000 /    0.843 ± 0.000   picks (d, tau): [(0, 'l2f_native')]
+  pyb_d3     naive       1.358 ± 0.000 |    0.330 ± 0.000 /    0.825 ± 0.000   picks (d, tau): [(0, 'tau50ms')]
+  pyb_d3     scan        1.365 ± 0.000 |    0.196 ± 0.000 /    0.771 ± 0.000   picks (d, tau): [(3, 'tau30ms')]
+  pyb_d3     applied     1.365 ± 0.000 |    0.196 ± 0.000 /    0.771 ± 0.000   picks (d, tau): [(0, 'tau30ms')]
+  pyb_jit14  naive       1.426 ± 0.000 |    0.481 ± 0.000 /    0.872 ± 0.000   picks (d, tau): [(0, 'tau50ms')]
+  pyb_jit14  scan        1.400 ± 0.000 |    0.489 ± 0.000 /    0.850 ± 0.000   picks (d, tau): [(2, 'tau30ms')]
+  pyb_jit14  applied     1.358 ± 0.000 |    0.263 ± 0.000 /    0.785 ± 0.000   picks (d, tau): [(0, 'tau30ms')]
