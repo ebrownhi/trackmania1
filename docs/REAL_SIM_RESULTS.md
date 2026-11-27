@@ -400,5 +400,16 @@ AR(1) action-noise exploration was tried for F1 first and gave no gain.
 - **Persistent cost:** DR policies fly laps about `33%` slower (`5.60` vs `4.21 s` at 2.2M), a robustness-for-speed trade-off (cf. Prop 2.3 / Exp 17).
 - **Caveats:** 3 seeds; clean completion is nearly binary per seed; the targets are too easy at ≥1.1M to rank arms.
 
+## Round 7 — In progress (2026-11-26; usage limit hit mid-round)
+
+### Exp 25 — Does source performance predict target performance? (sim→target predictivity)
+([exp25_predictivity.py](../real_sim/exp25_predictivity.py); no training; 51 exact-state PPO policies and 118 sensor-limited students from Exp 10/19/21–24; Pearson, Spearman, and MMRV (definition from memory of SIMPLER); 95% bootstrap CIs over policies.)
+- **Training course:** the L2F ranking predicts the PyBullet ranking (Spearman `0.84–0.88`, MMRV ≤ `0.02` gates).
+- **Held-out course:** no predictivity for exact-state PPO (Spearman `≈0.04`, CI spans 0). The L2F held-out course is the harder environment (mean gates `0.76` vs `0.94`), driven by L2F thrust-limit overfitting. Dynamics-DR policies stay partly predictive (`0.47`).
+- **Target-side corrections break predictivity by construction:** adding the F3 GP students raises clean-completion MMRV from `0.00` to `0.49`.
+- **Caveats:** target ceiling compresses correlations; checkpoints sharing a trunk aren't independent.
+
+Exp 26 (gap attribution), 27 (hover-normalized thrust DR), 28 (student RL fine-tuning) and 29 (applied-action readback) were started but stopped unfinished when the usage limit was reached; any partial scripts/outputs in `real_sim/exp26–29*` and `results/real_sim/exp26–29*` are uncommitted and unverified.
+
 ## Setup & reproducibility notes
 - Reproducible environment & build scripts are captured in [code/pixi.toml](../code/pixi.toml) and [code/setup_sims.sh](../code/setup_sims.sh); run `pixi run --manifest-path code/pixi.toml test` (`17/17` tests passing in ~5 s).
