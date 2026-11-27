@@ -15,10 +15,11 @@ Run any experiment with `../code/.pixi/envs/default/bin/python real_sim/<script>
 | Relay limit-cycle period `4(d+1)` | Exp 2 | ⚠️ **Corrected:** measured and exact discrete model give **4d+2 ticks** |
 | Lemma 1.1 ZOH vs zero-mask dropout | Exp 3 | ✅ ZOH: 100% gates up to p=0.5; zero-mask crashes every seed at p ≥ 0.2; staleness = d_o + p/(1-p) |
 | Thm 2.2 action buffer (H2 guardrail) | Exp 4, 4b | ✅ buffer16 survives d=8–12 where a_{t-1} crashes; randomized-latency buffer: 0 crashes in target at all d |
-| H2' dynamics DR helps | Exp 4b, 9, 10, 19 | ❌ no gain in Exp 4b; DR fine-tuning *hurt* target hold error on every target in Exp 9 (−29…−65% of gap); Exp 19 ablation: the racing-task penalty comes from the dynamics factors cumulatively and mostly reflects lower source skill at equal budget. **Latency-only randomization is the best variant** (`1.00` held-out target gates, clean `0.67` vs `0.40` nominal, within seed noise) — consistent with the proposal's H2 latency clause |
+| H2' dynamics DR helps | Exp 4b, 9, 10, 19, 24 | ⚠️ **no transfer gain, no transfer harm:** the Exp 10/19 penalty is under-training at 550k (Exp 24: full DR matches no-DR at ≥1.1M, `1.00 / 1.00` in both targets; ceiling effect), at a ~33% lap-time cost. DR does improve held-out-course robustness under L2F's tight thrust limits (`0.96` vs `0.34` gates at 2.2M). Latency-only DR is best at 550k |
 | H1' smoothness penalty (PPO) | Exp 7, 7b, 7c | ⚠️ partial: penalty alone (Exp 7) ❌; with buffer + latency DR, λ=0 learns bang-bang control whose target error is 4.5× its source error; λ=0.3 warm-start halves chattering and lowers target error at every d (0.26→0.18 m at d=0, 0.50→0.27 m at d=1); λ=0.3 from scratch fails to learn on 2/3 seeds |
 | Thm 2.4 recurrent-observer OOD | Exp 5, 5b | ⚠️ partial: with a 2.3× larger gap, fixed-dynamics estimators degrade (GRU 0.21, FF 0.23 m/s) and randomized ones hold (0.14, 0.15 m/s); 'GRU_fixed worse than FF' not observed |
-| H3' recurrent students + randomized distillation | Exp 5, 5b, 10, 21 | ✅ **supported after the audit fix (Exp 21)**: Exp 10's sensor-limited students all crashed (a course-position shortcut in learned estimators, plus a near-infeasible training sensor); with track-free velocity observers, both GRUs beat a feed-forward estimator in every target cell (randomized GRU by 0.32–0.48 gates), the randomized-dynamics GRU beats the fixed one in all 6 target cells (hard / perturbed: 0.56 vs 0.26 gates), and only the randomized GRU beats an alpha-beta filter in every cell. Students still trail the exact teacher (1.00), and L2F-source held-out performance is weak |
+| H3' recurrent students + randomized distillation | Exp 5, 5b, 10, 21, 23 | ✅ supported (Exp 21) and now reaching **full-course completion** (Exp 23). With a 3-flight PnP-bias GP, the track-free GRU student completes held-out `ellipse3d` in the PyBullet target at every sensor level (nominal `1.00 / 0.93 / 0.53`, perturbed `0.77 / 0.60 / 0.60` at clean / mid / hard, vs `0` before). Multi-track estimator training lifts L2F-source completion `0.33 → 0.60` (clean). Open: collision-free completion `≤ 0.50`; the source at hard stays at `0` (teacher ceiling) |
+| Privileged critic (proposal ablation) | Exp 20, 22 | ✅ with a track-free-capable actor (Exp 22): asym critic > masked critic in `64/66` seed × cell pairs. Asym learns the training course (`0.98–1.00` gates) at every sensor level; sym never exceeds `0.45`. Held-out targets `0.30–0.51` vs `0.07–0.08`. It fixes learnability, not transfer (Exp 21 students transfer better) |
 | Nuance #1 (velocity removal unobservable) | Exp 5 | ❌ not reproduced (2 cm position noise still gives ~0.1 m/s velocity) |
 | Thm 2.5 phantom residual / delay alignment | Exp 6 | ✅ Δf≡0 control: d̂=3 exact, naive 0.12 vs aligned 0.007 m/s² (17×) |
 | Guardrail #5 + Nuance #2 joint (d̂, τ̂) SysID | Exp 6 | ✅ needed on PyBullet: delay-only scan fails (d̂=0); joint scan recovers d̂=3, τ̂=30 ms exactly |
@@ -247,7 +248,7 @@ The `none` and `full` arms reproduce Exp 10's `nominal_ppo` and `dr_ppo` exactly
 
 ### Exp 20 — Privileged (asymmetric) vs symmetric critic for sensor-limited PPO (proposal: "remove privileged critic inputs")
 ([exp20_privileged_critic.py](../real_sim/exp20_privileged_critic.py), [asym_policy.py](../real_sim/asym_policy.py), 3 seeds × 2 arms, Exp 10 recipe; the actor is provably blind to the privileged block — `tests/test_asym_policy.py`.)
-Both arms **fail to learn**: `0.14 ± 0.02` (asym) vs `0.09 ± 0.00` (sym) gates and `100%` crashes even on the training course in the source. The privileged critic gives a small, consistent edge, but around a policy that cannot fly. The ablation is therefore *uninformative* in this sensor regime (see the diagnosis below) rather than a negative result for privileged critics. Its actor received the same track-relative, hard-sensor observation that Exp 21 found shortcut-prone. **This ablation is still open:** a fair rerun needs PPO with the track-free kinematic inputs of Exp 21 (or fine-tuning the Exp 21 student) in the actor.
+Both arms **fail to learn**: `0.14 ± 0.02` (asym) vs `0.09 ± 0.00` (sym) gates and `100%` crashes even on the training course in the source. The privileged critic gives a small, consistent edge, but around a policy that cannot fly. The ablation is therefore *uninformative* in this sensor regime (see the diagnosis below) rather than a negative result for privileged critics. Its actor received the same track-relative, hard-sensor observation that Exp 21 found shortcut-prone. **Resolved in Exp 22 (Round 6):** with track-free kinematic inputs in the actor, the privileged critic decisively helps.
 
 ### Exp 10 sensor-limited half — previously unreported, and why it failed
 The Round 3 write-up showed only the exact-state rows of Exp 10. The sensor-limited rows (from `exp10_method_matrix.json`) are:
@@ -322,6 +323,82 @@ at the clean level, and `≥0.94` at mid.
   (ii) In the L2F *source*, held-out performance is weak for every observer (`≤0.63`, `0.18` at hard), although the teacher scores `1.00` there.
   L2F's lower thrust margin (T/W 1.47 vs 2.25) makes the teacher far less tolerant of estimate error than in PyBullet, so target/source ratios exceed 1.
   (iii) Gate *completion* (all 12 gates) is still rare for students; these are gate-fraction results.
+
+## Round 6 — Remaining drone gaps (2026-11-26, three parallel sub-studies)
+
+### Exp 22 — Privileged vs symmetric critic with a track-free-capable actor (fair rerun of Exp 20)
+([exp22_privileged_critic_trackfree.py](../real_sim/exp22_privileged_critic_trackfree.py), [trackfree_env.py](../real_sim/trackfree_env.py); from scratch, Exp 10 recipe `450k` at `λ=0.02` + `100k` at `λ=0.20`; 5 seeds at mid, 3 at clean and hard.)
+The actor sees the sensor-limited racing obs **plus the last 8 Exp 21 kinematic frames**, so velocity is inferable without the course-position shortcut. Arms differ only in the critic input (`asym`: + privileged exact-state block; `sym`: masked). A behaviour-cloning warm start was piloted and rejected: it degraded under PPO.
+
+| Level | Arm | figure8 source | ellipse3d source | ellipse3d target_nominal | ellipse3d target_perturbed |
+|---|---|---|---|---|---|
+| clean (3) | asym | `1.00±0.00` / `0.00` | `0.27±0.11` / `0.40` | `0.51±0.18` / `0.00` | `0.41±0.11` / `0.10` |
+| clean (3) | sym | `0.28±0.14` / `0.70` | `0.11±0.03` / `1.00` | `0.08±0.00` / `1.00` | `0.01±0.00` / `1.00` |
+| mid (5) | asym | `0.98±0.04` / `0.00` | `0.23±0.10` / `0.56` | `0.42±0.17` / `0.14` | `0.24±0.15` / `0.58` |
+| mid (5) | sym | `0.34±0.11` / `0.44` | `0.08±0.01` / `0.94` | `0.07±0.03` / `0.98` | `0.06±0.04` / `0.92` |
+| hard (3) | asym | `1.00±0.00` / `0.00` | `0.50±0.26` / `0.33` | `0.30±0.08` / `0.13` | `0.29±0.03` / `0.07` |
+| hard (3) | sym | `0.28±0.10` / `0.57` | `0.12±0.02` / `0.70` | `0.07±0.02` / `0.90` | `0.06±0.03` / `0.97` |
+
+(gate fraction / crash rate, mean ± std over seeds)
+
+- **The privileged critic is what makes sensor-limited PPO learnable:** asym > sym in `64/66` seed × cell pairs. Every asym seed learns the training course in the source (`0.91–1.00` gates, `0` crashes); no sym seed exceeds `0.45`.
+- **Exp 20's failure came from the actor's observation:** with track-free kinematic inputs, the asym arm goes from `0.14` to `0.98–1.00` source training-course gates. Exp 20 also used a different sensor level, so this is attribution by elimination, not a one-factor test.
+- **Caveat:** these directly trained students transfer worse than Exp 21's teacher + GRU-estimator students (mid / nominal target, held-out: `0.42` vs `0.78`), and held-out source performance stays weak (`0.23–0.50`). The privileged critic fixes learnability, not transfer.
+
+### Exp 23 — From gate fraction to full-course completion for sensor-limited students (3 seeds × 3 sensor levels)
+([exp23_student_completion.py](../real_sim/exp23_student_completion.py), [student_plus.py](../real_sim/student_plus.py).)
+**Diagnosis** (Exp 21 `kin_gru_rand`, held-out `ellipse3d`):
+- **Target: the whole gap is the PnP gate bias.** With the bias switched off, the Exp 21 student already completes the course in PyBullet at every sensor level (completion `1.00`, `0` crashes). With it on, completion is `0` (gates `0.76–0.86`).
+- **Source: the velocity estimate is the bottleneck.** At the clean level, true velocity gives completion `1.00` and the estimate gives `0`. Its body-z error triples on `ellipse3d` (`0.24–0.28` vs `0.09–0.13 m/s`) because the planar training course under-covers vertical motion.
+- **Source at hard is a teacher ceiling.** Even the teacher with *true* velocity reaches only `0.29–0.47` gates (stale geometry), which caps any observer.
+
+**Fixes (ablated):**
+- **F1:** estimator DAgger on a multi-track pool (figure8 + 6 Exp 18 circuits, excluding `ellipse3d` and its near-duplicates; the estimator is track-free, so no track geometry is learned).
+- **F2:** delay compensation (predict the observed pose forward by its staleness).
+- **F3:** PnP-bias GP fit from 3 calibration flights per target on the *training* course with ground-truth inputs, used to correct the observed position (bias `0.29–0.45 m` RMS → `0.05–0.07 m` held-out residual).
+
+AR(1) action-noise exploration was tried for F1 first and gave no gain.
+
+**Held-out `ellipse3d`, completion (mean ± std) / gate fraction / crash rate:**
+
+| Sensor | Variant | `source_l2f` | `target_nominal` | `target_perturbed` |
+|---|---|---|---|---|
+| clean | Exp 21 `kin_gru_rand` | `0.33 ± 0.47` / `0.63` / `0.53` | `0.00` / `0.79` / `0.00` | `0.00` / `0.68` / `0.00` |
+| clean | + F1 | `0.60 ± 0.33` / `0.90` / `0.10` | `0.00` / `0.75` / `0.00` | `0.00` / `0.63` / `0.13` |
+| clean | + F1 + F2 + F3 | `0.60 ± 0.33` / `0.90` / `0.10` | `1.00 ± 0.00` / `1.00` / `0.00` | `0.70 ± 0.16` / `0.97` / `0.00` |
+| clean | F3 only | `0.33 ± 0.47` / `0.63` / `0.53` | **`1.00 ± 0.00`** / `1.00` / `0.00` | **`0.77 ± 0.21`** / `0.98` / `0.00` |
+| mid | Exp 21 `kin_gru_rand` | `0.27 ± 0.38` / `0.51` / `0.67` | `0.00` / `0.78` / `0.00` | `0.00` / `0.59` / `0.27` |
+| mid | + F1 + F2 | `0.50 ± 0.41` / `0.74` / `0.40` | `0.03` / `0.69` / `0.07` | `0.00` / `0.55` / `0.17` |
+| mid | F3 only | `0.27 ± 0.38` / `0.51` / `0.67` | **`0.93 ± 0.09`** / `0.99` / `0.03` | **`0.60 ± 0.33`** / `0.96` / `0.00` |
+| hard | Exp 21 `kin_gru_rand` | `0.00` / `0.18` / `1.00` | `0.00` / `0.76` / `0.00` | `0.00` / `0.56` / `0.27` |
+| hard | + F1 + F2 | `0.00` / `0.29` / `0.87` | `0.03` / `0.64` / `0.07` | `0.00` / `0.39` / `0.43` |
+| hard | + F1 + F2 + F3 | `0.00` / `0.29` / `0.87` | `0.13 ± 0.12` / `0.82` / `0.00` | `0.07 ± 0.09` / `0.78` / `0.07` |
+| hard | F3 only | `0.00` / `0.18` / `1.00` | **`0.53 ± 0.41`** / `0.94` / `0.00` | **`0.60 ± 0.33`** / `0.96` / `0.00` |
+
+- **F3, the perception-bias residual, is what turns gate fraction into completion in the target:** completion `0 → 0.53–1.00` (nominal) and `0 → 0.60–0.77` (perturbed) at all levels, with `0–3%` crashes. This is Swift's GP perception residual (Prop 2.7) working on a racing task.
+- **F1 is the source fix:** clean completion `0.33 → 0.60` and crashes `0.53 → 0.10`; mid `0.27 → 0.43`. It is neutral to slightly negative in the target.
+- **F2 helps the source but hurts the target at mid and hard** (velocity-extrapolation error), so the full stack is *worse* than F3 alone in the targets. The best deployable student differs by domain: F1 + F2 in the source, F3 alone in the target.
+- **Still open:**
+  - collision-free completion stays modest (`≤ 0.50` in the target);
+  - the source at hard stays at completion `0` (teacher ceiling under stale geometry);
+  - seed variance on completion is high;
+  - F3 assumes mocap ground truth for 3 calibration flights, as in Exp 9/10.
+
+### Exp 24 — DR budget sweep: under-training vs transfer harm (H2' follow-up to Exp 19)
+([exp24_dr_budget_sweep.py](../real_sim/exp24_dr_budget_sweep.py), 4 arms × 3 seeds; one continuing `λ=0.02` trunk per run, with `λ=0.20` fine-tune branches (22% of trunk) at total budgets `550k / 1.1M / 2.2M`; the 550k point reproduces Exp 19 exactly.)
+
+| Arm | Budget | source figure8 gates | source ellipse3d gates | held-out `target_nominal` gates / clean | held-out `target_perturbed` gates / clean | median lap (nom) |
+|---|---|---|---|---|---|---|
+| `none` | 550k / 1.1M / 2.2M | `1.00 / 1.00 / 1.00` | `0.80 / 0.33 / 0.34` | `1.00/0.40`, `1.00/1.00`, `1.00/1.00` | `1.00/0.40`, `0.99/0.87`, `1.00/1.00` | `5.02 / 4.45 / 4.21 s` |
+| `full` | 550k / 1.1M / 2.2M | `0.78 / 1.00 / 1.00` | `0.67 / 0.90 / 0.96` | `0.75/0.00`, `1.00/1.00`, `1.00/1.00` | `0.67/0.00`, `1.00/1.00`, `1.00/1.00` | `7.12 / 5.83 / 5.60 s` |
+| `latency_only` | 550k / 1.1M / 2.2M | `1.00 / 1.00 / 1.00` | `1.00 / 0.86 / 0.34` | `1.00/0.67`, `1.00/0.67`, `1.00/1.00` | `0.97/0.33`, `1.00/0.67`, `1.00/0.77` | `5.63 / 4.74 / 4.39 s` |
+| `no_mass` | 550k / 1.1M / 2.2M | `0.97 / 1.00 / 1.00` | `0.86 / 1.00 / 0.72` | `0.92/0.33`, `1.00/0.67`, `1.00/0.67` | `0.86/0.00`, `1.00/0.67`, `1.00/0.33` | `5.61 / 5.29 / 5.45 s` |
+
+- **The Exp 10/19 DR penalty is under-training, not transfer harm:** once full DR's source skill catches up (`1.00` on figure8 at ≥1.1M), it matches no-DR in both PyBullet targets (`1.00` gates / `1.00` clean completion on held-out `ellipse3d`).
+- **No measurable DR transfer *benefit* either:** every arm saturates both targets at ≥1.1M (ceiling effect).
+- **Where DR does help:** on the hardest condition, held-out `ellipse3d` in the low-thrust-margin L2F source. Full DR improves with budget (`0.67 → 0.90 → 0.96`), while no-DR and latency-only *degrade* (`0.80 → 0.34`, `1.00 → 0.34`). Without dynamics DR, longer training overfits the training course under L2F's tight thrust limits.
+- **Persistent cost:** DR policies fly laps about `33%` slower (`5.60` vs `4.21 s` at 2.2M), a robustness-for-speed trade-off (cf. Prop 2.3 / Exp 17).
+- **Caveats:** 3 seeds; clean completion is nearly binary per seed; the targets are too easy at ≥1.1M to rank arms.
 
 ## Setup & reproducibility notes
 - Reproducible environment & build scripts are captured in [code/pixi.toml](../code/pixi.toml) and [code/setup_sims.sh](../code/setup_sims.sh); run `pixi run --manifest-path code/pixi.toml test` (`17/17` tests passing in ~5 s).

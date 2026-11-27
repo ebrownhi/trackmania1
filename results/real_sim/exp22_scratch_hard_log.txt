@@ -1,0 +1,14 @@
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+Exp 22 (scratch, hard): 6 runs in 384s
+
+[figure8] gate_frac | crash  (mean ± std, 3 seeds)
+  asym_critic  source_l2f: 1.000 ± 0.000 | 0.000 ± 0.000 || target_nominal: 0.278 ± 0.145 | 0.167 ± 0.170 || target_perturbed: 0.314 ± 0.121 | 0.267 ± 0.047
+  sym_critic   source_l2f: 0.281 ± 0.097 | 0.567 ± 0.419 || target_nominal: 0.092 ± 0.012 | 0.867 ± 0.189 || target_perturbed: 0.086 ± 0.004 | 0.933 ± 0.094
+
+[ellipse3d] gate_frac | crash  (mean ± std, 3 seeds)
+  asym_critic  source_l2f: 0.500 ± 0.257 | 0.333 ± 0.236 || target_nominal: 0.297 ± 0.081 | 0.133 ± 0.125 || target_perturbed: 0.286 ± 0.026 | 0.067 ± 0.094
+  sym_critic   source_l2f: 0.117 ± 0.024 | 0.700 ± 0.245 || target_nominal: 0.067 ± 0.024 | 0.900 ± 0.082 || target_perturbed: 0.056 ± 0.034 | 0.967 ± 0.047

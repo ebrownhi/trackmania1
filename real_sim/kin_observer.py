@@ -123,9 +123,14 @@ class AlphaBeta:
 
 
 def distill_kin(teacher, recurrent: bool, obs_delay: int, p_drop: float, seed: int, dyn_sampler=None,
-                delays=(0,), iters: int = 6, eps: int = 10, steps: int = 800) -> nn.Module:
+                delays=(0,), iters: int = 6, eps: int = 10, steps: int = 800, act_noise: float = 0.0,
+                courses=None) -> nn.Module:
     """On-policy DAgger for the velocity estimator: label = true 0.33 v_B, executed action = teacher (prob beta)
-    or the student (teacher on the estimate)."""
+    or the student (teacher on the estimate). `act_noise` > 0 adds AR(1) exploration noise (std `act_noise` on
+    collective thrust, half that on body rates) to every executed action, widening the velocity states the
+    estimator sees (Exp 23: the planar training course under-covers body-z velocity). `courses`, if given, is a list of
+    (course, centerline) pairs; each episode flies one drawn at random (the estimator is track-free, so this widens
+    its velocity distribution without exposing it to any track geometry)."""
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
     est = KinGRU() if recurrent else KinFF()
@@ -137,9 +142,14 @@ def distill_kin(teacher, recurrent: bool, obs_delay: int, p_drop: float, seed: i
     for it in range(iters):
         beta = 1.0 if it == 0 else max(0.0, 0.5 - 0.1 * it)
         for ep in range(eps):
+            if courses:
+                env.course, env.cl = courses[int(rng.integers(len(courses)))]
+                env.gates, env.tangents = env.cl.gates, env.cl.tangents
             o, _ = env.reset(seed=10_000 * seed + 100 * it + ep)
             pol.reset_episode()
             X, Y = [], []
+            n = np.zeros(4)
+            sig = act_noise * np.array([1.0, 0.5, 0.5, 0.5])
             while True:
                 Y.append(o[-N_PRIV:][15:18].copy())
                 v_hat = pol.estimate(env)
@@ -148,6 +158,9 @@ def distill_kin(teacher, recurrent: bool, obs_delay: int, p_drop: float, seed: i
                     a = teacher.predict(teacher_input(o, o[-N_PRIV:][15:18]), deterministic=True)[0]
                 else:
                     a = teacher.predict(teacher_input(o, v_hat), deterministic=True)[0]
+                if act_noise > 0.0:
+                    n = 0.9 * n + np.sqrt(1.0 - 0.81) * sig * rng.standard_normal(4)
+                    a = np.clip(a + n, -1.0, 1.0)
                 o, _, term, trunc, _ = env.step(a)
                 if term or trunc:
                     break

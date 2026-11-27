@@ -1,0 +1,49 @@
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+Exp 23: 9 jobs in 638s
+
+[figure8] completion | clean_completion | gate_frac | crash  (mean ± std over seeds)
+  clean v0_exp21   source_l2f: 1.00 | 1.00 | 1.00 | 0.00 || target_nominal: 0.00 | 0.00 | 0.75 | 0.03 || target_perturbed: 0.00 | 0.00 | 0.63 | 0.10
+  clean v1_f1      source_l2f: 1.00 | 1.00 | 1.00 | 0.00 || target_nominal: 0.00 | 0.00 | 0.71 | 0.00 || target_perturbed: 0.00 | 0.00 | 0.61 | 0.23
+  clean v2_f1f2    source_l2f: 1.00 | 1.00 | 1.00 | 0.00 || target_nominal: 0.00 | 0.00 | 0.71 | 0.00 || target_perturbed: 0.00 | 0.00 | 0.61 | 0.23
+  clean v3_f1f2f3  source_l2f: 1.00 | 1.00 | 1.00 | 0.00 || target_nominal: 0.90 | 0.60 | 0.99 | 0.00 || target_perturbed: 0.73 | 0.13 | 0.98 | 0.00
+  clean v4_f3only  source_l2f: 1.00 | 1.00 | 1.00 | 0.00 || target_nominal: 0.90 | 0.43 | 0.99 | 0.00 || target_perturbed: 0.47 | 0.10 | 0.95 | 0.00
+  mid   v0_exp21   source_l2f: 0.70 | 0.50 | 0.94 | 0.03 || target_nominal: 0.00 | 0.00 | 0.74 | 0.00 || target_perturbed: 0.00 | 0.00 | 0.61 | 0.27
+  mid   v1_f1      source_l2f: 0.63 | 0.43 | 0.97 | 0.00 || target_nominal: 0.00 | 0.00 | 0.72 | 0.03 || target_perturbed: 0.00 | 0.00 | 0.59 | 0.07
+  mid   v2_f1f2    source_l2f: 0.80 | 0.50 | 0.98 | 0.00 || target_nominal: 0.00 | 0.00 | 0.64 | 0.07 || target_perturbed: 0.00 | 0.00 | 0.58 | 0.17
+  mid   v3_f1f2f3  source_l2f: 0.80 | 0.50 | 0.98 | 0.00 || target_nominal: 0.93 | 0.17 | 0.99 | 0.00 || target_perturbed: 0.43 | 0.20 | 0.92 | 0.00
+  mid   v4_f3only  source_l2f: 0.70 | 0.50 | 0.94 | 0.03 || target_nominal: 0.97 | 0.47 | 1.00 | 0.00 || target_perturbed: 0.67 | 0.37 | 0.94 | 0.00
+  hard  v0_exp21   source_l2f: 0.00 | 0.00 | 0.09 | 1.00 || target_nominal: 0.00 | 0.00 | 0.79 | 0.00 || target_perturbed: 0.00 | 0.00 | 0.61 | 0.07
+  hard  v1_f1      source_l2f: 0.00 | 0.00 | 0.17 | 0.90 || target_nominal: 0.03 | 0.00 | 0.75 | 0.03 || target_perturbed: 0.00 | 0.00 | 0.59 | 0.13
+  hard  v2_f1f2    source_l2f: 0.00 | 0.00 | 0.27 | 0.80 || target_nominal: 0.00 | 0.00 | 0.66 | 0.03 || target_perturbed: 0.00 | 0.00 | 0.43 | 0.57
+  hard  v3_f1f2f3  source_l2f: 0.00 | 0.00 | 0.27 | 0.80 || target_nominal: 0.47 | 0.20 | 0.89 | 0.00 || target_perturbed: 0.23 | 0.07 | 0.84 | 0.00
+  hard  v4_f3only  source_l2f: 0.00 | 0.00 | 0.09 | 1.00 || target_nominal: 0.70 | 0.60 | 0.94 | 0.03 || target_perturbed: 0.43 | 0.17 | 0.91 | 0.00
+
+[ellipse3d] completion | clean_completion | gate_frac | crash  (mean ± std over seeds)
+  clean v0_exp21   source_l2f: 0.33 | 0.33 | 0.63 | 0.53 || target_nominal: 0.00 | 0.00 | 0.79 | 0.00 || target_perturbed: 0.00 | 0.00 | 0.68 | 0.00
+  clean v1_f1      source_l2f: 0.60 | 0.47 | 0.90 | 0.10 || target_nominal: 0.00 | 0.00 | 0.75 | 0.00 || target_perturbed: 0.00 | 0.00 | 0.63 | 0.13
+  clean v2_f1f2    source_l2f: 0.60 | 0.47 | 0.90 | 0.10 || target_nominal: 0.00 | 0.00 | 0.75 | 0.00 || target_perturbed: 0.00 | 0.00 | 0.63 | 0.13
+  clean v3_f1f2f3  source_l2f: 0.60 | 0.47 | 0.90 | 0.10 || target_nominal: 1.00 | 0.50 | 1.00 | 0.00 || target_perturbed: 0.70 | 0.23 | 0.97 | 0.00
+  clean v4_f3only  source_l2f: 0.33 | 0.33 | 0.63 | 0.53 || target_nominal: 1.00 | 0.40 | 1.00 | 0.00 || target_perturbed: 0.77 | 0.33 | 0.98 | 0.00
+  mid   v0_exp21   source_l2f: 0.27 | 0.20 | 0.51 | 0.67 || target_nominal: 0.00 | 0.00 | 0.78 | 0.00 || target_perturbed: 0.00 | 0.00 | 0.59 | 0.27
+  mid   v1_f1      source_l2f: 0.43 | 0.33 | 0.66 | 0.47 || target_nominal: 0.00 | 0.00 | 0.69 | 0.03 || target_perturbed: 0.00 | 0.00 | 0.53 | 0.23
+  mid   v2_f1f2    source_l2f: 0.50 | 0.33 | 0.74 | 0.40 || target_nominal: 0.03 | 0.00 | 0.69 | 0.07 || target_perturbed: 0.00 | 0.00 | 0.55 | 0.17
+  mid   v3_f1f2f3  source_l2f: 0.50 | 0.33 | 0.74 | 0.40 || target_nominal: 0.70 | 0.07 | 0.97 | 0.00 || target_perturbed: 0.40 | 0.10 | 0.93 | 0.00
+  mid   v4_f3only  source_l2f: 0.27 | 0.20 | 0.51 | 0.67 || target_nominal: 0.93 | 0.37 | 0.99 | 0.03 || target_perturbed: 0.60 | 0.23 | 0.96 | 0.00
+  hard  v0_exp21   source_l2f: 0.00 | 0.00 | 0.18 | 1.00 || target_nominal: 0.00 | 0.00 | 0.76 | 0.00 || target_perturbed: 0.00 | 0.00 | 0.56 | 0.27
+  hard  v1_f1      source_l2f: 0.00 | 0.00 | 0.25 | 0.93 || target_nominal: 0.00 | 0.00 | 0.64 | 0.10 || target_perturbed: 0.00 | 0.00 | 0.50 | 0.33
+  hard  v2_f1f2    source_l2f: 0.00 | 0.00 | 0.29 | 0.87 || target_nominal: 0.03 | 0.00 | 0.64 | 0.07 || target_perturbed: 0.00 | 0.00 | 0.39 | 0.43
+  hard  v3_f1f2f3  source_l2f: 0.00 | 0.00 | 0.29 | 0.87 || target_nominal: 0.13 | 0.00 | 0.82 | 0.00 || target_perturbed: 0.07 | 0.00 | 0.78 | 0.07
+  hard  v4_f3only  source_l2f: 0.00 | 0.00 | 0.18 | 1.00 || target_nominal: 0.53 | 0.27 | 0.94 | 0.00 || target_perturbed: 0.60 | 0.00 | 0.96 | 0.00
+  calib clean_s0: target_nominal: n=3306 |b| rms 0.288 -> resid 0.056 m, target_perturbed: n=3217 |b| rms 0.332 -> resid 0.055 m
+  calib mid_s0: target_nominal: n=2708 |b| rms 0.328 -> resid 0.059 m, target_perturbed: n=2917 |b| rms 0.344 -> resid 0.059 m
+  calib hard_s0: target_nominal: n=2674 |b| rms 0.317 -> resid 0.057 m, target_perturbed: n=1367 |b| rms 0.367 -> resid 0.052 m
+  calib clean_s1: target_nominal: n=3431 |b| rms 0.302 -> resid 0.054 m, target_perturbed: n=2913 |b| rms 0.354 -> resid 0.064 m
+  calib mid_s1: target_nominal: n=3052 |b| rms 0.286 -> resid 0.056 m, target_perturbed: n=2838 |b| rms 0.310 -> resid 0.058 m
+  calib hard_s1: target_nominal: n=2673 |b| rms 0.339 -> resid 0.059 m, target_perturbed: n=2311 |b| rms 0.314 -> resid 0.059 m
+  calib clean_s2: target_nominal: n=3673 |b| rms 0.335 -> resid 0.057 m, target_perturbed: n=3367 |b| rms 0.354 -> resid 0.056 m
+  calib mid_s2: target_nominal: n=3265 |b| rms 0.384 -> resid 0.069 m, target_perturbed: n=3157 |b| rms 0.448 -> resid 0.056 m
+  calib hard_s2: target_nominal: n=2872 |b| rms 0.403 -> resid 0.074 m, target_perturbed: n=2557 |b| rms 0.430 -> resid 0.063 m

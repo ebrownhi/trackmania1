@@ -67,7 +67,11 @@
 - [x] **Exp 20 — privileged vs symmetric critic.** Both arms failed to learn with the shortcut-prone observation, so the ablation is uninformative. **Open:** rerun with a track-free actor.
 - [x] **Exp 15 claims corrected.** "0.000 ms" is a grid-cell hit, Fisher shows no advantage over a Gaussian walk, and every strategy exceeds the 0.5 m safety sphere in the target at ≥ 1 s.
 - [x] Doc links made relative (they work on GitHub now); +5 regression tests (`tests/test_asym_policy.py`).
-- [ ] **Remaining drone gaps:** privileged-critic rerun (above); students reaching full-course completion rather than gate fraction; a PnP-bias-aware observer; a DR budget sweep to separate under-training from transfer harm.
+- [x] **Round 6 (2026-11-26, three parallel sub-studies):**
+  - **Exp 22 (privileged critic):** decisively helps with a track-free actor (`64/66` pairs).
+  - **Exp 23 (full-course completion):** a PnP-bias GP gives completion in both targets at every sensor level; multi-track estimator training fixes the source at clean.
+  - **Exp 24 (DR budget sweep):** the DR penalty is under-training; no transfer gain or harm at ≥1.1M; DR improves held-out L2F robustness.
+- [ ] **Residual drone items (non-blocking):** collision-free completion for students (`≤ 0.50`); the source at hard sensor (teacher ceiling under stale geometry); harder targets so DR arms can be ranked (ceiling effect at ≥1.1M).
 
 ### P4 — Housekeeping ✅ done 2026-11-25
 10. [x] **Reproducible env:** `pixi run setup-sims` (`code/setup_sims.sh`) clones pinned l2f / gym-pybullet-drones / TMNF-C, applies `code/patches/tmnf-c-macos.patch`, builds the l2f wheel, installs `--no-deps` extras.

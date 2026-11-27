@@ -77,3 +77,59 @@ def test_kin_ff_is_causal():
     with th.no_grad():
         y, y2 = net.forward_seq(x), net.forward_seq(x2)
     assert th.allclose(y[:, :12], y2[:, :12]) and not th.allclose(y[:, 12:], y2[:, 12:])
+
+
+def _rollout_actions(pol, env, n=60):
+    o, _ = env.reset(seed=4)
+    pol.reset_episode()
+    acts = []
+    for k in range(n):
+        a = pol(o, env, k)
+        acts.append(a)
+        o, _, te, tr, _ = env.step(a)
+        if te or tr:
+            break
+    return np.array(acts)
+
+
+def test_plus_student_without_fixes_matches_kin_student():
+    from kin_observer import KinGRU, KinStudent
+    from student_plus import PlusStudent
+
+    th.manual_seed(0)
+    est = KinGRU()
+    _, m = _model(True)
+
+    class Teacher:  # deterministic stand-in with the teacher's predict interface
+        def predict(self, x, deterministic=True):
+            return np.tanh(x[:4] + x[15:19]), None
+
+    t = Teacher()
+    for pd in [0.0, 0.3]:
+        mk = lambda: PrivStackRacingEnv("figure8", "source", 8, obs_delay=1, p_drop=pd, random_start_gate=False, seed=3)
+        a1 = _rollout_actions(KinStudent(est, t), mk())
+        a2 = _rollout_actions(PlusStudent(est, t, obs_delay=1), mk())
+        assert a1.shape == a2.shape and np.allclose(a1, a2, atol=1e-6)
+
+
+def test_so3_exp_is_rotation_and_small_angle():
+    from student_plus import so3_exp
+
+    R = so3_exp(np.array([0.3, -0.2, 0.5]))
+    assert np.allclose(R.T @ R, np.eye(3), atol=1e-9) and np.isclose(np.linalg.det(R), 1.0)
+    assert np.allclose(so3_exp(np.array([0.0, 0.0, np.pi / 2])) @ [1, 0, 0], [0, 1, 0], atol=1e-9)
+
+
+def test_kinstack_env_layout():
+    from kin_observer import KIN_DIM
+    from trackfree_env import KIN_STACK_DIM, KinStackRacingEnv
+
+    env = KinStackRacingEnv("figure8", "source", 8, obs_delay=1, p_drop=0.1, seed=0)
+    o, _ = env.reset(seed=3)
+    assert o.shape == env.observation_space.shape == (env.n_sensor + KIN_STACK_DIM + N_PRIV,)
+    prev_newest = o[env.n_sensor:env.n_sensor + KIN_DIM].copy()
+    o, *_ = env.step(env.action_space.sample() * 0.1)
+    kin = o[env.n_sensor:env.n_sensor + KIN_STACK_DIM].reshape(-1, KIN_DIM)
+    assert np.allclose(kin[1], prev_newest)  # newest-first stack shifts by one frame per step
+    st = env.drone.true_state()
+    assert np.allclose(o[-N_PRIV:][15:18], 0.33 * (st.R.T @ st.v), atol=1e-5)

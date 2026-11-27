@@ -1,0 +1,69 @@
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+pybullet build time: Nov 21 2026 21:18:51
+  [none s0] 550k done at 163s: ellipse3d tgt_nom gf 1.00
+  [latency_only s0] 550k done at 164s: ellipse3d tgt_nom gf 1.00
+  [no_mass s0] 550k done at 165s: ellipse3d tgt_nom gf 1.00
+  [full s0] 550k done at 169s: ellipse3d tgt_nom gf 0.92
+  [none s0] 1100k done at 379s: ellipse3d tgt_nom gf 1.00
+  [latency_only s0] 1100k done at 383s: ellipse3d tgt_nom gf 1.00
+  [no_mass s0] 1100k done at 388s: ellipse3d tgt_nom gf 1.00
+  [full s0] 1100k done at 392s: ellipse3d tgt_nom gf 1.00
+  [none s0] 2200k done at 881s: ellipse3d tgt_nom gf 1.00
+  [latency_only s0] 2200k done at 885s: ellipse3d tgt_nom gf 1.00
+  [full s0] 2200k done at 908s: ellipse3d tgt_nom gf 1.00
+  [no_mass s0] 2200k done at 908s: ellipse3d tgt_nom gf 1.00
+  [none s1] 550k done at 225s: ellipse3d tgt_nom gf 1.00
+  [full s1] 550k done at 238s: ellipse3d tgt_nom gf 0.75
+  [latency_only s1] 550k done at 233s: ellipse3d tgt_nom gf 1.00
+  [no_mass s1] 550k done at 236s: ellipse3d tgt_nom gf 1.00
+  [none s1] 1100k done at 439s: ellipse3d tgt_nom gf 1.00
+  [full s1] 1100k done at 453s: ellipse3d tgt_nom gf 1.00
+  [latency_only s1] 1100k done at 437s: ellipse3d tgt_nom gf 1.00
+  [no_mass s1] 1100k done at 441s: ellipse3d tgt_nom gf 1.00
+  [none s1] 2200k done at 820s: ellipse3d tgt_nom gf 1.00
+  [full s1] 2200k done at 839s: ellipse3d tgt_nom gf 1.00
+  [latency_only s1] 2200k done at 817s: ellipse3d tgt_nom gf 1.00
+  [no_mass s1] 2200k done at 827s: ellipse3d tgt_nom gf 1.00
+  [none s2] 550k done at 153s: ellipse3d tgt_nom gf 1.00
+  [latency_only s2] 550k done at 153s: ellipse3d tgt_nom gf 1.00
+  [full s2] 550k done at 155s: ellipse3d tgt_nom gf 0.58
+  [no_mass s2] 550k done at 156s: ellipse3d tgt_nom gf 0.75
+  [none s2] 1100k done at 340s: ellipse3d tgt_nom gf 1.00
+  [latency_only s2] 1100k done at 353s: ellipse3d tgt_nom gf 1.00
+  [full s2] 1100k done at 360s: ellipse3d tgt_nom gf 1.00
+  [no_mass s2] 1100k done at 365s: ellipse3d tgt_nom gf 1.00
+  [none s2] 2200k done at 802s: ellipse3d tgt_nom gf 1.00
+  [latency_only s2] 2200k done at 813s: ellipse3d tgt_nom gf 1.00
+  [full s2] 2200k done at 824s: ellipse3d tgt_nom gf 1.00
+  [no_mass s2] 2200k done at 829s: ellipse3d tgt_nom gf 1.00
+Exp 24: 12 runs in 2565s
+
+[figure8] source gf | tgt_nom gf / clean | tgt_pert gf / clean | ratio nom  (mean ± std)
+  none            550k  1.000 ± 0.000 | 1.000 ± 0.000 / 0.67 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000
+  none           1100k  1.000 ± 0.000 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000
+  none           2200k  1.000 ± 0.000 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000
+  full            550k  0.778 ± 0.104 | 0.719 ± 0.175 / 0.00 | 0.722 ± 0.219 / 0.00 | 0.912 ± 0.124
+  full           1100k  1.000 ± 0.000 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000
+  full           2200k  1.000 ± 0.000 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000
+  latency_only    550k  1.000 ± 0.000 | 1.000 ± 0.000 / 0.83 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000
+  latency_only   1100k  1.000 ± 0.000 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000 / 0.33 | 1.000 ± 0.000
+  latency_only   2200k  1.000 ± 0.000 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000
+  no_mass         550k  0.972 ± 0.039 | 0.944 ± 0.079 / 0.67 | 0.889 ± 0.157 / 0.57 | 0.970 ± 0.043
+  no_mass        1100k  1.000 ± 0.000 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000
+  no_mass        2200k  1.000 ± 0.000 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000
+
+[ellipse3d] source gf | tgt_nom gf / clean | tgt_pert gf / clean | ratio nom  (mean ± std)
+  none            550k  0.797 ± 0.230 | 1.000 ± 0.000 / 0.40 | 1.000 ± 0.000 / 0.40 | 1.399 ± 0.501
+  none           1100k  0.328 ± 0.075 | 1.000 ± 0.000 / 1.00 | 0.986 ± 0.020 / 0.87 | 3.229 ± 0.787
+  none           2200k  0.336 ± 0.143 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000 / 1.00 | 3.671 ± 1.712
+  full            550k  0.675 ± 0.301 | 0.750 ± 0.136 / 0.00 | 0.667 ± 0.245 / 0.00 | 1.346 ± 0.549
+  full           1100k  0.897 ± 0.145 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000 / 1.00 | 1.149 ± 0.210
+  full           2200k  0.961 ± 0.055 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000 / 1.00 | 1.044 ± 0.062
+  latency_only    550k  1.000 ± 0.000 | 1.000 ± 0.000 / 0.67 | 0.972 ± 0.039 / 0.33 | 1.000 ± 0.000
+  latency_only   1100k  0.858 ± 0.123 | 1.000 ± 0.000 / 0.67 | 1.000 ± 0.000 / 0.67 | 1.190 ± 0.178
+  latency_only   2200k  0.344 ± 0.096 | 1.000 ± 0.000 / 1.00 | 1.000 ± 0.000 / 0.77 | 3.143 ± 0.881
+  no_mass         550k  0.856 ± 0.204 | 0.917 ± 0.118 / 0.33 | 0.861 ± 0.142 / 0.00 | 1.108 ± 0.153
+  no_mass        1100k  1.000 ± 0.000 | 1.000 ± 0.000 / 0.67 | 1.000 ± 0.000 / 0.67 | 1.000 ± 0.000
+  no_mass        2200k  0.725 ± 0.284 | 1.000 ± 0.000 / 0.67 | 1.000 ± 0.000 / 0.33 | 1.729 ± 0.902
